@@ -256,9 +256,9 @@
         }
         
         // Responsive adjustments
-        @media (max-width: 1600px) { .grid-container { column-count: 3; column-gap: 10px; } }
-        @media (max-width: 1200px) { .grid-container { column-count: 2; column-gap: 8px; } }
-        @media (max-width: 768px)  { .grid-container { column-count: 1; column-gap: 8px; } }
+        // @media (max-width: 1600px) { .grid-container { column-count: 3; column-gap: 10px; } }
+        // @media (max-width: 1200px) { .grid-container { column-count: 2; column-gap: 8px; } }
+        // @media (max-width: 768px)  { .grid-container { column-count: 1; column-gap: 8px; } }
     }
 
     .reportDialog {
