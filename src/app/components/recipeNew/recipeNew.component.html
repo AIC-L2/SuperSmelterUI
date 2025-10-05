@@ -1,0 +1,162 @@
+<div class="recipe">  
+  <p-table [value]="standDetails"  [(selection)]="selectedRecipe" dataKey="id" selectionMode="single" styleClass="p-datatable-gridlines p-datatable-sm p-datatable-striped" [showCurrentPageReport]="true"
+  [(contextMenuSelection)]="selectedRecipe"
+ [paginator]="false" [rows]="25"
+  [rowsPerPageOptions]="[ 25, 50]" [paginatorDropdownAppendTo]="'body'" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" #recipeTable>
+  <ng-template pTemplate="caption">
+      <div class="table-caption">
+          <div class="caption-title">
+              <span class="font-semibold">Stand</span>
+          </div>
+
+          <div class="caption-buttons">
+              <span class="p-buttonset">
+                  <!-- <p-fileUpload [disabled]="!selectedRecipe || (userPermissions && !userPermissions.canEdit)" #fileImport mode="basic" name="demo[]" (onError)="onImportFail()" uploadLabel="My upload" cancelLabel="cancel" pTooltip="Import From excel file"
+                  tooltipPosition="top" chooseIcon="import-icon" [url]="uploadUrl" accept=".xlsx, application/msexcel" (onUpload)="uploadFile($event)" (onSelect)="onFileSelect()" [auto]="true">
+              </p-fileUpload> -->
+                  <button pButton pRipple pTooltip="Read All from L1" tooltipPosition="top" icon="pi pi-download" class="p-button-info p-button-sm"></button>
+                  <!-- <button pButton pRipple [disabled]='(!selectedRecipe ||( userPermissions && !userPermissions.canEdit))' pTooltip="Update Recipe Value From Actual" tooltipPosition="top" class="p-button-info p-button-sm" icon="pi pi-arrows-h" (click)="updateRecipeValues()"></button> -->
+                  <button pButton pRipple  pTooltip="Send All to L1" tooltipPosition="top" icon="pi pi-upload" class="p-button-info p-button-sm" ></button>
+              </span>
+              <!-- <span class="p-buttonset"> -->
+                  <!-- <button pButton pRipple [disabled]='!selectedRecipe || (userPermissions && !userPermissions.canAdd)' pTooltip="Recipe Report" tooltipPosition="top" label="Report" icon="pi report-icon" class="p-button-info p-button" (click)="viewRecipeReport()"></button> -->
+                  <!-- <button pButton pRipple [disabled]='!selectedRecipe || (userPermissions && !userPermissions.canEdit)' pTooltip="Duplicate Recipe" tooltipPosition="top" icon="pi duplicate-icon" class="p-button-info p-button-sm" (click)="openSaveAs()"></button> -->
+                  <!-- <button pButton pRipple [disabled]='!selectedRecipe || selectedRecipe.isActive == true || (userPermissions && !userPermissions.canAdd)' pTooltip="Copy Recipe Data" tooltipPosition="top" icon="pi pi-clone" class="p-button-info p-button-sm" (click)="showCopyDlg()"></button> -->
+                  <!-- <button pButton pRipple [disabled]='!selectedRecipe || selectedRecipe.isActive || (userPermissions && !userPermissions.canEdit)' pTooltip="Set Active" tooltipPosition="top" icon="pi pi-check" class="p-button-info p-button-sm" (click)="setActive()"></button> -->
+                  <!-- <button pButton pRipple [disabled]='!selectedRecipe || (userPermissions && !userPermissions.canEdit)' tooltipPosition="top" pTooltip="Export Recipe to Excel" (click)="exportFile()" icon="pi export-icon" class="p-button-info p-button"></button>
+                  <button pButton pRipple [disabled]="!selectedRecipe || (userPermissions && !userPermissions.canEdit)" (click)="showImportDialog()" icon='pi import-icon' pTooltip="Export Plant Data" tooltipPosition="top" class="p-button-info p-button"></button> -->
+              <!-- </span> -->
+          </div>
+      </div>
+  </ng-template>
+  <ng-template pTemplate="header" let-columns>
+      <tr>
+          <th rowspan="2">
+              <div class="header-content">
+                  <span class="header-text">Device</span>                  
+              </div>
+          </th>
+          <th rowspan="2">
+              <div class="header-content">
+                  <span class="header-text">Enable</span>              
+              </div>
+          </th>
+          <th rowspan="2">
+              <div class="header-content">
+                  <span class="header-text">Diameter</span>
+                  <div class="header-icons">
+                  </div>
+              </div>
+          </th>
+          <th rowspan="2">
+              <div class="header-content">
+                  <span class="header-text">Groove</span>
+                 
+              </div>
+          </th>
+          <th rowspan="2">
+            <div class="header-content">
+                <span class="header-text">Gear Ratio</span>
+               
+            </div>
+        </th>  
+          <th colspan="2">
+              <div class="header-content text-center">
+                  <span class="header-text text-center">Speed (m/sec)</span>
+                
+              </div>
+          </th>
+          <th colspan="2">
+              <div class="header-content text-center">
+                  <span class="header-text text-center">Tension Regulation</span>
+                 
+              </div>
+          </th>
+          <th colspan="5">
+              <div class="header-content text-center">
+                  <span class="header-text text-center">Looper Regulation</span>
+              </div>
+          </th>
+          <th colspan="6">
+            <div class="header-content text-center">
+                <span class="header-text text-center">Delta-V (Head)</span>
+            </div>
+        </th>
+        <th colspan="6">
+          <div class="header-content text-center">
+            <span class="header-text text-center">Delta-V (Tail)</span>
+          </div>
+        </th>
+      </tr>
+      <tr>
+        <!-- speed -->
+        <th>RPM</th>
+        <th>R-factor</th>
+        <!-- Tension Regulation  -->
+        <th>Enable</th>
+        <th>Reference (N/mm2)</th>
+        <!-- Looper Regulation  -->
+        <th>Enable</th>
+        <th>Reference (%)</th>
+        <th>PropGain</th>
+        <th>Arm UpDelay</th>
+        <th>Arm DNDelay</th>
+        <!-- Delta-V head  -->
+        <th>Enable</th>
+        <th>Reference (%)</th>
+        <th>Delay drop</th>
+        <th>Delay Raise</th>
+        <th>Ramp Raise</th>
+        <th>Ramp Drop</th>
+        <!-- Delta-V tail  -->
+        <th>Enable</th>
+        <th>Reference (%)</th>
+        <th>Delay drop</th>
+        <th>Delay Raise</th>
+        <th>Ramp Raise</th>
+        <th>Ramp Drop</th>
+      </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-rowData let-ri="rowIndex">
+      <tr >
+          <td>
+              <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis">
+                  {{rowData.device}}
+              </div>
+          </td>
+          <td class="checkbox-cell"><input type="checkbox" [(ngModel)]="rowData.enable" class="p-checkbox" tabindex="-1"></td>
+          <td>{{rowData.diameter }}</td>
+          <td>{{rowData.groove}}</td>
+          <td>{{rowData.gearRatio}}</td>
+          <td style="background-color: bisque;">{{rowData.speedRpm}}</td>
+          <td>{{rowData.Rfactor}}</td>
+          <td class="checkbox-cell"><input type="checkbox" [(ngModel)]="rowData.tensionRegulationEnable" class="p-checkbox" tabindex="-1"></td>
+          <td>{{rowData.tensionReference}}</td>
+          <td class="checkbox-cell"><input type="checkbox" [(ngModel)]="rowData.looperRegulationEnable" class="p-checkbox" tabindex="-1"></td>
+          <td>{{rowData.looperReference}}</td>
+          <td>{{rowData.looperPropGain}}</td>
+          <td>{{rowData.looperArmUpDelay}}</td>
+          <td>{{rowData.looperArmDNDelay}}</td>
+          <td class="checkbox-cell"><input type="checkbox" [(ngModel)]="rowData.deltaVHeadEnable" class="p-checkbox" tabindex="-1"></td>
+          <td>{{rowData.deltaVHeadReference}}</td>
+          <td>{{rowData.deltaVDelayDrop}}</td>
+          <td>{{rowData.deltaVDelayRaise}}</td>
+          <td>{{rowData.deltaVRampRaise}}</td>
+          <td>{{rowData.deltaVRampDrop}}</td>
+          <td class="checkbox-cell"><input type="checkbox" [(ngModel)]="rowData.deltaVTailEnable" class="p-checkbox" tabindex="-1"></td>
+          <td>{{rowData.deltaVTailReference}}</td>
+          <td>{{rowData.deltaVTailDelayDrop}}</td>
+          <td>{{rowData.deltaVTailDelayRaise}}</td>
+          <td>{{rowData.deltaVTailRampRaise}}</td>
+          <td>{{rowData.deltaVTailRampDrop}}</td>
+      </tr>
+  </ng-template>
+
+  <ng-template pTemplate="emptymessage">
+      <tr>
+          <td [colSpan]="26"> No Records</td>
+      </tr>
+  </ng-template>
+</p-table>
+
+</div>

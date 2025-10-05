@@ -1,0 +1,272 @@
+.app-container {
+  min-height: 97vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  background: #ffffff;
+  color: #1a5f3a;
+  padding: 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  position: relative;
+}
+
+.header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: #48bb78;
+}
+
+.indicators {
+  padding: 2px !important;
+  min-width: 28rem;
+  .eachControl {
+      padding: 5px 10px 5px 10px;
+      cursor: pointer;
+      text-transform: uppercase;
+      border: 1px solid #aaaaaa;
+      display: flex;
+      flex-grow: 0.1;
+      align-items: center;
+      justify-content: space-between;
+
+      i.status_0,
+      i.status_4 {
+          //Service Error
+          color: var(--p-red-500);
+      }
+      i.status_1 {
+          //Line Running
+          color: #0aca11;
+      }
+      i.status_2 {
+          // Line Stop
+          color: yellow;
+      }
+      i.status_3 {
+          // L1 Communication Failure
+          color: #ff9b00;
+      }
+  }
+
+  .blink {
+      animation: blinker 0.5s cubic-bezier(1, 0, 1, 1) infinite alternate;
+  }
+  @keyframes blinker {
+      from {
+          opacity: 1;
+      }
+      to {
+          opacity: 0;
+      }
+  }
+}
+
+.header-content {
+  // max-width: 1200px;
+  // margin: 0 auto;
+  // padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 50px;
+  position: relative;
+  padding: 0 20px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 200px;
+  flex-shrink: 0;
+}
+
+.header-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-shrink: 0;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.logo img {
+  height: 30px;
+  width: auto;
+}
+
+.header-title {
+  text-align: left;
+}
+
+.header-title h1 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1a5f3a;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.refresh-section {
+  display: flex;
+  align-items: center;
+}
+
+.refresh-button {
+  // background: transparent;
+  color:#48bb78;
+  border: none;
+  // border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  // transition: all 0.3s ease;
+  // box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+// .refresh-button:hover:not(:disabled) {
+//   background: transparent;
+//   transform: scale(1.05);
+//   // box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+// }
+
+// .refresh-button:disabled {
+//   background: #a0aec0;
+//   cursor: not-allowed;
+//   transform: none;
+// }
+
+.refresh-button i {
+  font-size: 1.2rem;
+}
+
+.navigation {
+  display: flex;
+  gap: 30px;
+  flex-shrink: 0;
+}
+
+.nav-link {
+  color: #1a5f3a;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.nav-link:hover {
+  background: rgba(26, 95, 58, 0.1);
+  transform: translateY(-1px);
+}
+
+.nav-link.active {
+  background: rgba(26, 95, 58, 0.2);
+  font-weight: 600;
+}
+
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 3px;
+  background: #1a5f3a;
+  border-radius: 2px;
+}
+
+.main-content {
+  flex: 1;
+}
+
+@media (max-width: 768px) {
+  .header-content {
+    flex-direction: column;
+    height: auto;
+    padding: 10px 20px;
+    gap: 15px;
+    position: static;
+  }
+  
+  .header-left {
+    flex-direction: column;
+    gap: 10px;
+    order: 1;
+  }
+  
+  .logo {
+    gap: 8px;
+  }
+  
+  .logo img {
+    height: 25px;
+  }
+  
+  .header-title {
+    text-align: center;
+  }
+  
+  .header-title h1 {
+    font-size: 1.3rem;
+  }
+  
+  .header-center {
+    order: 2;
+  }
+  
+  .indicators {
+    min-width: auto;
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .header-right {
+    flex-direction: column;
+    gap: 10px;
+    order: 3;
+  }
+  
+  .refresh-section {
+    margin: 0;
+  }
+  
+  .navigation {
+    gap: 12px;
+  }
+  
+  .nav-link {
+    font-size: 0.9rem;
+    padding: 6px 10px;
+  }
+}

@@ -1,0 +1,121 @@
+.merge-recipe-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  .equipment-selection-section {
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #e9ecef;
+    }
+
+    ::ng-deep .p-datatable {
+      .p-datatable-header {
+        background: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+      }
+
+      .p-datatable-thead > tr > th {
+        background: #f8f9fa;
+        color: #495057;
+        font-weight: 600;
+        border-bottom: 2px solid #dee2e6;
+        padding: 12px 8px;
+      }
+
+      .p-datatable-tbody > tr {
+        transition: background-color 0.2s ease;
+
+        &:hover {
+          background-color: #f8f9fa;
+        }
+
+        &:nth-child(even) {
+          background-color: #f8f9fa;
+        }
+      }
+
+      .p-datatable-tbody > tr > td {
+        padding: 10px 8px;
+        vertical-align: middle;
+        border-bottom: 1px solid #dee2e6;
+      }
+
+      .checkbox-column {
+        width: 60px;
+        text-align: center;
+      }
+
+      .name-column {
+        width: 200px;
+        font-weight: 500;
+      }
+
+      .description-column {
+        width: auto;
+        color: #6c757d;
+      }
+
+      .p-checkbox {
+        .p-checkbox-box {
+          border: 2px solid #ced4da;
+          border-radius: 4px;
+          width: 18px;
+          height: 18px;
+
+          &.p-highlight {
+            background-color: #007bff;
+            border-color: #007bff;
+          }
+        }
+      }
+
+      .p-column-filter-menu {
+        .p-column-filter-menu-button {
+          color: #6c757d;
+          margin-left: 8px;
+        }
+      }
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .p-4 {
+      padding: 1rem;
+    }
+
+    .mr-2 {
+      margin-right: 0.5rem;
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .merge-recipe-container {
+    padding: 15px;
+    margin: 10px;
+
+    .equipment-selection-section {
+      ::ng-deep .p-datatable {
+        .checkbox-column {
+          width: 50px;
+        }
+
+        .name-column {
+          width: 150px;
+        }
+      }
+    }
+    }
+}

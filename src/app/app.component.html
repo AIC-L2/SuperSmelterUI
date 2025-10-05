@@ -1,0 +1,53 @@
+<p-toast />
+<div class="app-container">
+  <header class="header">
+    <div class="header-content">
+      <div class="header-left">
+        <div class="logo">
+          <img src="/images/aicLogo.png" alt="AIC Logo">
+        </div>
+        
+        <div class="header-title">
+          <h1>{{ getPageTitle() }}</h1>
+        </div>
+      </div>
+      
+      <div class="header-center">
+        <div class="indicators flex justify-content-center">
+          <!-- @for (item of headerIndicator; track item.name) {
+            <div class="eachControl"  pTooltip="{{item.description}}" tooltipPosition="bottom"></div>
+          } -->
+          <div *ngFor="let item of headerIndicator" class="eachControl" [escape]=false pTooltip="{{item.description}}"  tooltipPosition="bottom">
+              <i class="pi pi-circle-on text-xl status_{{item.comStatus}}" [ngClass]="{'blink' : (item.comStatus == 0 || item.comStatus == 4)}"></i>
+              <span *ngIf="item.name"> {{ item.name}} </span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="header-right">
+        <div class="refresh-section">
+          <button 
+            class="refresh-button" 
+            (click)="refreshPage()" 
+            [disabled]="isRequest"
+            pTooltip="Refresh page" 
+            tooltipPosition="bottom">
+            <i class="pi pi-refresh"></i>
+          </button>
+        </div>
+
+        <nav class="navigation">
+          <!-- <a routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link">Reports</a> -->
+          <!-- <a routerLink="/reports" routerLinkActive="active" class="nav-link">Reports</a> -->
+          <a routerLink="/recipe" routerLinkActive="active" class="nav-link">Recipes</a>
+          <!-- <a routerLink="/recipeNew" routerLinkActive="active" class="nav-link">Recipes New</a> -->
+          <!-- <a routerLink="/test" routerLinkActive="active" class="nav-link">Test</a> -->
+        </nav>
+      </div>
+    </div>
+  </header>
+  
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

@@ -1,0 +1,73 @@
+<div class="opOverview">    
+    <div class="p-grid">
+        <div class="p-col-12">
+            <app-recipe (selectOption)="changeRecipeID($event)" style="width: 100%;"></app-recipe>
+        </div>
+    </div>
+
+    <!-- PrimeNG Scrollable Tabs -->
+    <div class="operatorTabs">
+        <p-tabs 
+            [(value)]="activeTabValue" 
+            [scrollable]="true"
+            [lazy]="false"
+            (onChange)="onTabChange($event)"
+            styleClass="operator-tabs">
+            
+            <p-tablist>
+                <p-tab 
+                    *ngFor="let item of operatorTabList; trackBy: trackByTabName" 
+                    [value]="item.name">
+                    {{ item.name }}
+                </p-tab>
+            </p-tablist>
+            
+            <p-tabpanels>
+                <p-tabpanel 
+                    *ngFor="let item of operatorTabList; trackBy: trackByTabName" 
+                    [value]="item.name">
+                    
+                    <!-- Grid layout for Auxiliary tab -->
+                    <div *ngIf="item.name === 'Auxillary'" class="auxiliary-grid">
+                        <div class="grid-container">
+                            <div *ngFor="let equip of uniqueEquipments(item.inverseParentOperatorTab); let i = index" 
+                                 class="grid-item grid-item-auto">
+                                <app-dynamic-equipment  
+                                    [MasterSelectedRecipe]="selectedRecipe" 
+                                    [inpfieldDefinitionId]="item.inverseParentOperatorTab[0]?.parentFieldDefinitionId" 
+                                    [inpEquipmentId]="equip.fieldTypeDefinitionId"
+                                    [isActiveTab]="activeTabValue === item.name"
+                                    (gearSelChanged)="onGearSelChanged($event)" 
+                                    [inpReloadBlockStand]="reloadBlockStand">
+                                </app-dynamic-equipment>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Default layout for other tabs -->
+                    <div *ngIf="item.name !== 'Auxillary'">
+                        <ng-container *ngFor="let equip of item.inverseParentOperatorTab">
+                            <app-dynamic-equipment  
+                                [MasterSelectedRecipe]="selectedRecipe" 
+                                [inpfieldDefinitionId]="item.inverseParentOperatorTab[0]?.parentFieldDefinitionId" 
+                                [inpEquipmentId]="equip.fieldTypeDefinitionId"
+                                [isActiveTab]="activeTabValue === item.name"
+                                (gearSelChanged)="onGearSelChanged($event)" 
+                                [inpReloadBlockStand]="reloadBlockStand">
+                            </app-dynamic-equipment>
+                        </ng-container>
+                    </div>
+                </p-tabpanel>
+            </p-tabpanels>
+        </p-tabs>
+
+        <div *ngIf="isNoData" class="w-full p-3 flex justify-content-center">
+            <div class="font-bold span_req">Equipment Tab Configuration Not Found ..! </div>
+        </div>
+        
+        <!-- Fallback content when no tabs are loaded -->
+        <div *ngIf="operatorTabList.length === 0 && !isNoData" class="w-full p-3 flex justify-content-center">
+            <div class="font-bold">Loading operator tabs...</div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,502 @@
+<p-toast />
+<div class="recipe">
+    <p-contextMenu #cmRecipe [model]="contextMenuItems" appendTo="body"> </p-contextMenu>
+    
+    <!-- Recipe Grid Container with Toggle Button -->
+    <div class="recipe-grid-container">
+        <div class="recipe-grid-header">
+            <div class="grid-title">
+                <!-- <span>Recipe</span> -->
+            </div>
+            <div class="recipe-info">
+                @if(getActiveRecipe()){
+                <div class="active-recipe-info">
+                    <span class="info-label">Active Recipe:</span>
+                    <span class="info-value">{{getActiveRecipe().name}}</span>
+                    <span class="info-separator">|</span>
+                    <span class="info-label">Product:</span>
+                    <span class="info-value">{{getActiveRecipe().outputProductName}}</span>
+                    <span class="info-separator">|</span>
+                    <span class="info-label">Speed:</span>
+                    <span class="info-value">{{getActiveRecipe().fmspeed | numberFormat:2}} mps</span>
+                </div>
+                }@else {
+                    <div class="active-recipe-info">
+                        <span class="info-label">No Active Recipe</span>
+                    </div>
+                }
+            </div>
+            <span class="p-buttonset">
+                <!-- <p-fileUpload [disabled]="!selectedRecipe || (userPermissions && !userPermissions.canEdit)" #fileImport mode="basic" name="demo[]" (onError)="onImportFail()" uploadLabel="My upload" cancelLabel="cancel" pTooltip="Import From excel file"
+                tooltipPosition="top" chooseIcon="import-icon" [url]="uploadUrl" accept=".xlsx, application/msexcel" (onUpload)="uploadFile($event)" (onSelect)="onFileSelect()" [auto]="true">
+            </p-fileUpload> -->
+                <button pButton pRipple [disabled]='!selectedRecipe || !selectedRecipe?.isActive || (l1Status!== 1 && l1Status!== 2)' pTooltip="Read All from L1" tooltipPosition="top" icon="pi pi-download" class="p-button-success p-button-sm" (click)="readRecipeFromL1()"></button>
+                <!-- <button pButton pRipple [disabled]='(!selectedRecipe ||( userPermissions && !userPermissions.canEdit))' pTooltip="Update Recipe Value From Actual" tooltipPosition="top" class="p-button-info p-button-sm" icon="pi pi-arrows-h" (click)="updateRecipeValues()"></button> -->
+                <button pButton pRipple [disabled]='!selectedRecipe || !selectedRecipe?.isActive || l1Status!== 2' pTooltip="Send All to L1" tooltipPosition="top" icon="pi pi-upload" class="p-button-success p-button-sm" (click)="sendRecipeToL1()"></button>
+                    <button pButton pRipple 
+                    [icon]="isRecipeGridMinimized ? 'pi pi-chevron-down' : 'pi pi-chevron-up'" 
+                    class="p-button-text p-button-sm toggle-grid-btn" 
+                    pTooltip="{{ isRecipeGridMinimized ? 'Recipe ' : 'Hide' }}" 
+                    tooltipPosition="top" 
+                    (click)="toggleRecipeGrid()">
+                </button>
+            </span>
+           
+        </div>
+        
+        <div class="recipe-grid-content" [ngClass]="{'minimized': isRecipeGridMinimized}">
+            <div class="recipeGrid flex">
+                <div class="left"> 
+                    <p-table [value]="recipeList"  [(selection)]="selectedRecipe" dataKey="id" selectionMode="single" [loading]="loading" [scrollable]='true' [scrollHeight]="contentHeight" styleClass="p-datatable-gridlines p-datatable-sm p-datatable-striped" [showCurrentPageReport]="true"
+                        [contextMenu]="cmRecipe" [(contextMenuSelection)]="selectedRecipe" (onContextMenuSelect)="contextMenuSelected($event)" (onFilter)="onFilter($event)"
+                        (onRowSelect)="onRowSelect()" (onRowUnselect)="onRowUnSelect($event)" [paginator]="false" [rows]="25"
+                        [rowsPerPageOptions]="[ 25, 50]" [paginatorDropdownAppendTo]="'body'" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" #recipeTable>
+                        <ng-template pTemplate="caption">
+                            <div class="table-caption">
+                                <div class="caption-title">
+                                    <span>Recipes</span>
+                                </div>
+
+                                <div class="caption-buttons">
+                                    <!-- <span class="p-buttonset"> -->
+                                        <!-- <p-fileUpload [disabled]="!selectedRecipe || (userPermissions && !userPermissions.canEdit)" #fileImport mode="basic" name="demo[]" (onError)="onImportFail()" uploadLabel="My upload" cancelLabel="cancel" pTooltip="Import From excel file"
+                                        tooltipPosition="top" chooseIcon="import-icon" [url]="uploadUrl" accept=".xlsx, application/msexcel" (onUpload)="uploadFile($event)" (onSelect)="onFileSelect()" [auto]="true">
+                                    </p-fileUpload> -->
+                                        <!-- <button pButton pRipple [disabled]='!selectedRecipe || !selectedRecipe?.isActive || (l1Status!== 1 && l1Status!== 2) || (userPermissions && !userPermissions.canEdit)' pTooltip="Read All from L1" tooltipPosition="top" icon="pi pi-download" class="p-button-info p-button-sm" (click)="readRecipeFromL1()"></button> -->
+                                        <!-- <button pButton pRipple [disabled]='(!selectedRecipe ||( userPermissions && !userPermissions.canEdit))' pTooltip="Update Recipe Value From Actual" tooltipPosition="top" class="p-button-info p-button-sm" icon="pi pi-arrows-h" (click)="updateRecipeValues()"></button> -->
+                                        <!-- <button pButton pRipple [disabled]='!selectedRecipe || !selectedRecipe?.isActive || l1Status!== 2  || (userPermissions && !userPermissions.canEdit)' pTooltip="Send All to L1" tooltipPosition="top" icon="pi pi-upload" class="p-button-info p-button-sm" (click)="sendRecipeToL1()"></button> -->
+                                    <!-- </span> -->
+                                    <!-- <span class="p-buttonset"> -->
+                                        <!-- <button pButton pRipple [disabled]='!selectedRecipe || (userPermissions && !userPermissions.canAdd)' pTooltip="Recipe Report" tooltipPosition="top" label="Report" icon="pi report-icon" class="p-button-info p-button" (click)="viewRecipeReport()"></button> -->
+                                        <!-- <button pButton pRipple [disabled]='!selectedRecipe || (userPermissions && !userPermissions.canEdit)' pTooltip="Duplicate Recipe" tooltipPosition="top" icon="pi duplicate-icon" class="p-button-info p-button-sm" (click)="openSaveAs()"></button> -->
+                                        <!-- <button pButton pRipple [disabled]='!selectedRecipe || selectedRecipe.isActive == true || (userPermissions && !userPermissions.canAdd)' pTooltip="Copy Recipe Data" tooltipPosition="top" icon="pi pi-clone" class="p-button-info p-button-sm" (click)="showCopyDlg()"></button> -->
+                                        <!-- <button pButton pRipple [disabled]='!selectedRecipe || selectedRecipe.isActive || (userPermissions && !userPermissions.canEdit)' pTooltip="Set Active" tooltipPosition="top" icon="pi pi-check" class="p-button-info p-button-sm" (click)="setActive()"></button> -->
+                                        <!-- <button pButton pRipple [disabled]='!selectedRecipe || (userPermissions && !userPermissions.canEdit)' tooltipPosition="top" pTooltip="Export Recipe to Excel" (click)="exportFile()" icon="pi export-icon" class="p-button-info p-button"></button>
+                                        <button pButton pRipple [disabled]="!selectedRecipe || (userPermissions && !userPermissions.canEdit)" (click)="showImportDialog()" icon='pi import-icon' pTooltip="Export Plant Data" tooltipPosition="top" class="p-button-info p-button"></button> -->
+                                    <!-- </span> -->
+                                    <span class="p-buttonset">
+                                        <!-- <button pButton pRipple [disabled]='!selectedRecipe || (userPermissions && !userPermissions.canAdd)' pTooltip="Recipe Report" tooltipPosition="top" label="Report" icon="pi report-icon" class="p-button-info p-button" (click)="viewRecipeReport()"></button> -->
+                                        <!-- <button pButton pRipple [disabled]='!selectedRecipe' pTooltip="Duplicate Recipe" tooltipPosition="top" icon="pi duplicate-icon" class="p-button-info p-button p-button-sm" (click)="openSaveAs()"></button> -->
+                                        <button pButton pRipple [disabled]='!selectedRecipe || selectedRecipe.isActive == true ' pTooltip="Copy Recipe Data" tooltipPosition="top" icon="pi pi-clone" class="p-button-info p-button p-button-sm" (click)="showCopyDlg()"></button>
+                                        <button pButton pRipple [disabled]='!selectedRecipe || selectedRecipe.isActive ' pTooltip="Set Active" tooltipPosition="top" icon="pi pi-check" class="p-button-info p-button p-button-sm" (click)="setActive()"></button>
+                                        <!-- <button pButton pRipple [disabled]='!selectedRecipe || (userPermissions && !userPermissions.canEdit)' tooltipPosition="top" pTooltip="Export Recipe to Excel" (click)="exportFile()" icon="pi export-icon" class="p-button-info p-button"></button>
+                                        <button pButton pRipple [disabled]="!selectedRecipe || (userPermissions && !userPermissions.canEdit)" (click)="showImportDialog()" icon='pi import-icon' pTooltip="Export Plant Data" tooltipPosition="top" class="p-button-info p-button"></button> -->
+                                    </span>
+                                    <span class="p-buttonset ml-5">
+                                        <!-- <button pButton pRipple [disabled]='!selectedRecipe || selectedRecipe.isActive' pTooltip="Set Active" tooltipPosition="top" icon="pi pi-check" class="p-button-info p-button" (click)="setActive()"></button> -->
+                                        <button pButton pRipple  pTooltip="Add New" tooltipPosition="top" icon="pi pi-plus" class="p-button-success p-button-sm" (click)="showRecipeDialog('Add')"></button>
+                                        <button pButton pRipple [disabled]='!selectedRecipe' pTooltip="Edit" tooltipPosition="top" icon="pi pi-pencil" class="p-button-warning p-button-sm" (click)="showRecipeDialog('Edit')"></button>
+                                        <button pButton pRipple [disabled]="!selectedRecipe || selectedRecipe.isActive == true" pTooltip="Delete" tooltipPosition="top" icon="pi pi-trash" class="p-button-danger p-button-sm" (click)="deleteRecipe()"></button>
+                                    </span>
+                                </div>
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="header" let-columns>
+                            <tr>
+                                <th style="width: 12rem;">
+                                    <div class="header-content">
+                                        <span class="header-text">Name</span>
+                                        <div class="header-icons">
+                                            <p-columnFilter type="text" field="name" matchMode='contains' display="menu"></p-columnFilter>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="header-content">
+                                        <span class="header-text">Product</span>
+                                        <div class="header-icons">
+                                            <p-columnFilter field="outputProductId" matchMode="equals" display="menu">
+                                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                                    <p-select [filter]="true" filterBy="sapcode" [ngModel]="value" [options]="outputProductsList" (onChange)="filter($event.value)" placeholder="Any" optionValue="id" optionLabel="code"> </p-select>
+                                                </ng-template>
+                                            </p-columnFilter>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="header-content">
+                                        <span class="header-text">Speed (mps)</span>
+                                        <div class="header-icons">
+                                        </div>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="header-content">
+                                        <span class="header-text">Description</span>
+                                        <div class="header-icons">
+                                            <p-columnFilter type="text" field="description" matchMode='contains' display="menu"></p-columnFilter>
+                                        </div>
+                                    </div>
+                                </th> 
+                                <th>
+                                    <div class="header-content">
+                                        <span class="header-text">Last Update</span>
+                                        <div class="header-icons">
+                                            <p-sortIcon pSortableColumn="updateDate" class="SortIcon" field="updateDate"></p-sortIcon>
+                                        </div>
+                                    </div>
+                                </th>
+                                <!-- <th> Billet 
+                                    <p-columnFilter field="inputProductId" matchMode="equals" display="menu">
+                                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                            <p-dropdown [filter]="true" filterBy="code" [ngModel]="value" [options]="inputProductsList" (onChange)="filter($event.value)" placeholder="Any" optionValue="id" optionLabel="code"> </p-dropdown>
+                                        </ng-template>
+                                    </p-columnFilter>
+                                </th> -->
+                                <th>
+                                    <div class="header-content">
+                                        <span class="header-text">Steel Grade</span>
+                                        <div class="header-icons">
+                                            <p-columnFilter field="steelGradeId" matchMode="in" display="menu" [showMatchModes]="false" [showOperator]="false" [showAddButton]="false">
+                                                <ng-template pTemplate="header">
+                                                    <div class="px-3 pt-3 pb-0">
+                                                        <span class="font-bold">Steel Grade </span>
+                                                    </div>
+                                                </ng-template>
+                                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                                    <p-multiselect [filter]="true" filterBy="sapcode" [ngModel]="value" [options]="steelGradeList" placeholder="Any" (onChange)="filter($event.value)" optionValue="id" optionLabel="name">
+                                                        <ng-template let-option pTemplate="item">
+                                                            <div class="inline-block vertical-align-middle">
+                                                                <span class="ml-1 mt-1">{{ option.name }} </span><span *ngIf="option?.isGuid"><i class="pi pi-check" style="color: green"></i></span>
+                                                            </div>
+                                                        </ng-template>
+                                                    </p-multiselect>
+                                                </ng-template>
+                                            </p-columnFilter>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="header-content">
+                                        <span class="header-text">Active</span>
+                                        <div class="header-icons">
+                                        </div>
+                                    </div>
+                                </th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-rowData let-ri="rowIndex">
+                            <tr [ngClass]="rowData.id == unSelectedId ? 'row-selected' : ''" [pSelectableRow]="rowData" [pContextMenuRow]="rowData" (keydown)="onKeydown($event, ri)" (keydown.Delete)="(!selectedRecipe || selectedRecipe.isActive == true || (userPermissions && !userPermissions.canDelete))?'':deleteRecipe()">
+                                <td [pTooltip]="rowData.name">
+                                    <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis">
+                                        {{rowData.name}}
+                                    </div>
+                                </td>
+                                <td>{{rowData.outputProductName}}</td>
+                                <td>{{rowData.fmspeed | numberFormat:2 }}</td>
+                                <td>{{rowData.description}}</td>
+                                <td>{{rowData.updateDate ?? rowData.createDate | date : 'dd/MM/yy HH:mm:ss'}}</td>
+                                <!-- <td>{{rowData.inputProductName}}</td> -->
+                                <td>{{rowData.gradeName}}</td>
+                                <td style="text-align: center; padding: 0px;">
+                                    <i class="pi px-1 mt-2" [ngClass]="rowData.isActive?'pi-check font-bold':'pi-minus font-bold'" style="font-size: 1.2rem"></i>
+                                </td>
+                            </tr>
+                        </ng-template>
+
+                        <ng-template pTemplate="emptymessage">
+                            <tr>
+                                <td [colSpan]="8"> No Records</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            </div>
+        </div>
+    </div>
+  
+
+    <!-- EDIT RECIPE -->
+    <p-dialog [(visible)]="dlgRecipe" (onHide)="hideDialog()" [style]="{width: '450px'}" [modal]="true"
+        styleClass="recipe-dialog" [draggable]="true"  [closable]="true">
+        <ng-template pTemplate="header">
+            <div class="dialog-header">
+                <span class="dialog-title">Recipe</span>
+            </div>
+        </ng-template>
+
+        <!-- <p-header>
+            <div class="dialog-header">
+                <span class="dialog-title">Recipe</span>
+            </div>
+        </p-header> -->
+        <ng-template pTemplate="content">
+            <div class="recipe-form">
+                <div class="field mb-3">
+                    <label class="form-label">Name <span class="required-asterisk">*</span></label>
+                    <input type="text" pInputText [(ngModel)]="recipeDialogData.name" required maxlength="50" [autofocus]="true" class="form-input" />
+                    @if(submitted && !recipeDialogData.name) {
+                        <small class="error-message">Name is Required</small>
+                    }
+                    @if(submitted && isRecipeExist) {
+                        <small class="error-message">Recipe Already Exist</small>
+                    }
+                </div>
+                
+                <div class="field mb-3">
+                    <label class="form-label">Product <span class="required-asterisk">*</span></label>
+                    <p-select appendTo="body" [filter]="true" filterBy="code" [showClear]="true" [options]="outputProductsList" [(ngModel)]="recipeDialogData.outputProductId" placeholder="Select" [style]="{'width':'100%'}" optionLabel="code" optionValue="id" (onChange)="onChangeProductSelection()" class="form-select"></p-select>
+                    @if(submitted && !recipeDialogData.outputProductId) {
+                        <small class="error-message">Product is Required</small>
+                    }
+                </div>
+                
+                <div class="field mb-3">
+                    <label class="form-label">Speed (mps) <span class="required-asterisk">*</span></label>
+                    <p-inputNumber [(ngModel)]="recipeDialogData.fmspeed" locale="en-US" [disabled]="(l1Status!== 2 && recipeDialogData.isActive)" [useGrouping]="false" mode="decimal" [min]="0" [max]="100" [minFractionDigits]="1" [maxFractionDigits]="2" class="form-input-number" [style]="{'width':'100%'}"></p-inputNumber>
+                    @if(submitted && !recipeDialogData.fmspeed) {
+                        <small class="error-message">Speed (mps) is Required</small>
+                    }
+                </div>
+                
+                <div class="field mb-3">
+                    <label class="form-label">Description</label>
+                    <textarea rows="3" cols="30" pTextarea [(ngModel)]="recipeDialogData.description" class="form-textarea"></textarea>
+                </div>
+                
+                <div class="field mb-3">
+                    <label class="form-label">Steel Grade</label>
+                    <p-select appendTo="body" [disabled]="(l1Status!== 2 && recipeDialogData.isActive)" [filter]="true" filterBy="name" [showClear]="true" [options]="steelGradeList" [(ngModel)]="recipeDialogData.steelGradeId" placeholder="Select" [style]="{'width':'100%'}" optionLabel="name" optionValue="id" class="form-select">
+                        <ng-template let-option pTemplate="item">
+                            <div class="select-item">
+                                <span class="item-text">{{ option.name }}</span>
+                                @if(option?.isGuid) {
+                                    
+                                    <span class="guid-indicator">
+                                        <i class="pi pi-check"></i>
+                                    </span>
+                                }
+                                
+                            </div>
+                        </ng-template>
+                    </p-select>
+                </div>
+            </div>
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+            <div class="dialog-footer">
+                @if(!isEdit) {
+                    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-primary save-btn" (click)="saveRecipe()"></button>
+                }
+                @else {
+                    <button pButton pRipple label="Update" icon="pi pi-check" class="p-button-primary save-btn" (click)="updateRecipe()"></button>
+                }
+                <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-outlined cancel-btn" (click)="hideDialog()"></button>
+            </div>
+        </ng-template>
+    </p-dialog>
+
+    <p-dialog [(visible)]="saveAsdlg" header="Duplicate Recipe" [style]="{width: '450px'}" [modal]="true" styleClass="p-fluid" [draggable]="true">
+        <ng-template pTemplate="content">
+            <div class="field">
+                <label>Name</label>
+                <input type="text" disabled="true" pInputText [(ngModel)]="saveAsData.name" />
+            </div>
+            <div class="field">
+                <label>New Name</label>
+                <input type="text" pInputText [(ngModel)]="saveAsData.newName" required maxlength="50" [autofocus]="true" />
+                @if(submitted && !saveAsData.newName) {
+                    <small class="p-error"> New name is Required </small>
+                }
+                @if(submitted && isRecipeExist) {
+                    <small class="p-error"> Recipe Already Exist </small>
+                }
+            </div>
+            <div class="field">
+                <label>Description</label>
+                <input type="text" pInputText [(ngModel)]="saveAsData.description" required maxlength="200" />
+            </div>
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+            <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-outlined" (click)="saveAsRecipe(saveAsData)"></button>
+            <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-outlined" (click)="hideDialog()"></button>
+        </ng-template>
+    </p-dialog>
+
+    <!-- RECIPE REPORT DIALOG -->
+    <p-dialog [(visible)]="showReportDialog" [style]="{width: '110rem'}" header="Recipe Report" position="center" [modal]="true" styleClass="p-fluid reportDialog" [draggable]="true">
+        <ng-template pTemplate="content">
+            @if(showLoading) {
+                <div class="loader-container">
+                    <div class="loader"></div>
+                </div>
+            }
+           
+            <div [ngStyle]="{'height': '45rem'}">
+                @if(loadReport) {
+                    <div scrolling="no" style="height:45rem;  ">
+                        <iframe (load)="onLoad()" scrolling="no" width="100%" height="100%" [src]="urlSafe" frameborder="0"></iframe>
+                    </div>
+                }
+                <!-- <div *ngIf="loadReport" scrolling="no" style="height:45rem;  ">
+                    <iframe (load)="onLoad()" scrolling="no" width="100%" height="100%" [src]="urlSafe" frameborder="0"></iframe>
+                </div> -->
+            </div>
+        </ng-template>
+    </p-dialog>
+
+    <!-- L1 PROGRESS DIALOG -->
+    <p-dialog [(visible)]="dlgProgress" header="Progress" [style]="{width: '450px'}" [closable]="false" [modal]="true" styleClass="p-fluid" [draggable]="false">
+        <ng-template pTemplate="content">
+            <p-progressBar mode="indeterminate"></p-progressBar>
+        </ng-template>
+    </p-dialog>
+
+    <!-- Recipe merge Dialog -->
+    <p-dialog [(visible)]="recipeDlg" (onHide)="hideDialog()" [style]="{'width': '90rem','margin-left':'9rem'}" header="" [modal]="true" styleClass="p-fluid" [draggable]="true">
+        <ng-template pTemplate="content">
+            <div class="mergeDialog">
+                <div>
+                    <div class="card px-2 flex">
+                        <div>
+                            <span class="font-semibold">Selected Item :-</span>
+                        </div>
+                        <div
+                            class="pl-4 inline-flex align-items-center justify-content-center gap-5 p-text-secondary text-lg">
+                            <div class="white-space-nowrap">Recipe : <span class="font-bold">{{selectedRecipe?.name}}</span></div>
+                            <div class="white-space-nowrap">Product : <span class="font-bold">{{selectedRecipe?.outputProductName}}</span></div>
+                            <div class="white-space-nowrap">Grade : <span class="font-bold">{{selectedRecipe?.gradeName}}</span></div>
+                        </div>
+                    </div>
+                    <div class="mb-2"></div>
+
+                    <p-table [value]="copyRecipeList" [paginator]="false" [rows]="25" [(selection)]="selectedCopyRecipe" selectionMode="single" [loading]="loading" [scrollable]='true' scrollHeight="232px"
+                        styleClass="p-datatable-gridlines p-datatable-sm p-datatable-striped" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                        [rowsPerPageOptions]="[ 25, 50]" (onRowSelect)="onRowSelectCopy()" (onRowUnselect)="onRowUnSelectCopy()">
+                        <ng-template pTemplate="caption">
+                            <div class="table-caption">
+                                <span>Copy From</span>
+                                <div class="caption-title">
+                                    @if(selectedCopyRecipe) {
+                                        
+                                        <span class="p-text-secondary ml-2"> 
+                                            <b class="text-xl">{{selectedRecipe?.name}}</b> (Sp) Will be Updated with 
+                                            <b class="text-xl">{{selectedCopyRecipe?.name}}</b> <span class="text-green-500"> (Act)</span></span>
+                                    }
+                                </div>
+
+                                <div class="caption-buttons">                        
+                                
+                                        <div class="mt-1">
+                                            <button pButton pRipple [disabled]='!copy_From_recipeId || (userPermissions && !userPermissions.canEdit)' pTooltip="Copy" tooltipPosition="top" label="Copy" class="p-button-info p-button" (click)="copyRecipe()"></button>
+                                        </div>
+                                </div>
+                            </div>
+                        </ng-template>
+
+                        <ng-template pTemplate="header" let-columns>
+                            <tr>
+                                <th rowspan="2">
+                                    Name
+                                    <p-columnFilter type="text" field="name" matchMode='contains'
+                                        display="menu"></p-columnFilter>
+                                </th>
+                                <th rowspan="2" style="width: 10rem;">
+                                    Product
+                                    <p-columnFilter field="outputProductId" matchMode="equals" display="menu">
+                                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                            <p-select [filter]="true" filterBy="sapcode" [ngModel]="value" [options]="outputProductsList" (onChange)="filter($event.value)" placeholder="Any" optionValue="id" optionLabel="sapcode"> </p-select>
+                                        </ng-template>
+                                    </p-columnFilter>
+                                </th>
+                                <th rowspan="2" style="width: 7rem;">
+                                    Diameter
+                                </th>
+                                <th rowspan="2" style="width: 10rem;">
+                                    Grade
+                                    <p-columnFilter field="steelGradeId" matchMode="in" display="menu" [showMatchModes]="false" [showOperator]="false" [showAddButton]="false">
+                                        <ng-template pTemplate="header">
+                                            <div class="px-3 pt-3 pb-0">
+                                                <span class="font-bold">Steel Grade </span>
+                                            </div>
+                                        </ng-template>
+                                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                            <p-multiSelect [filter]="true" filterBy="sapcode" [ngModel]="value" [options]="steelGradeList" placeholder="Any" (onChange)="filter($event.value)" optionValue="id" optionLabel="name">
+                                                <ng-template let-option pTemplate="item">
+                                                    <div class="inline-block vertical-align-middle">
+                                                        <span class="ml-1 mt-1">{{ option.name }}</span>
+                                                    </div>
+                                                </ng-template>
+                                            </p-multiSelect>
+                                        </ng-template>
+                                    </p-columnFilter>
+                                </th>
+                                <th colspan="3" class="text-center"> Speed (mps) </th>
+                                <th rowspan="2" pSortableColumn="createDate" style="width: 130px;">
+                                    Created Date
+                                    <p-sortIcon class="SortIcon" field="createDate"></p-sortIcon>
+                                </th>
+                                <th rowspan="2" style="width: 5rem;"> Active </th>
+                                <th rowspan="2" style="width: 5rem;">IsDefault</th>
+                            </tr>
+                            <tr>
+                                <th class="th_padding" style="width: 5rem;">BDRM</th>
+                                <th class="th_padding" style="width: 5rem;">RM</th>
+                                <th class="th_padding" style="width: 5rem;">Final</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-rowData let-ri="rowIndex">
+                            <tr [pSelectableRow]="rowData" [pContextMenuRow]="rowData" (keydown)="onKeydown($event, ri)"
+                                (keydown.Delete)="(!selectedRecipe || selectedRecipe.isActive == true || (userPermissions && !userPermissions.canDelete))?'':deleteRecipe()">
+                                <td>{{rowData.name}}</td>
+                                <td>{{rowData.outputProductName}}</td>
+                                <td>{{rowData.diameter}}</td>
+                                <td>{{rowData.gradeName}}</td>
+                                <td>{{rowData.rmspeed | numberFormat:2}}</td>
+                                <td>{{rowData.finalSpeed | numberFormat:2}}</td>
+                                <td>{{rowData.finalStandSpeed | numberFormat:2}}</td>
+                                <td class="text-sm">{{rowData.createDate | date : 'dd/MM/yy HH:mm:ss'}}</td>
+                                <td>
+                                    <i class="pi px-1" [ngClass]="rowData.isActive == true ? 'pi-circle-fill text-green-500' : 'pi-circle'" style="font-size: 1.5rem"></i>
+                                </td>
+                                <td style="text-align: center; padding: 0px;">
+                                    <i class="pi px-1 mt-2" [ngClass]="rowData.isDefault ? 'pi-check font-bold' : 'pi-minus font-bold'" style="font-size: 1.2rem"></i>
+                                </td>
+                            </tr>
+                        </ng-template>
+
+                        <ng-template pTemplate="emptymessage">
+                            <tr>
+                                <td colspan="10"> No Records</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+
+                <app-merge-recipe (equipList)="mergeEquipList($event)"></app-merge-recipe>
+            </div>
+        </ng-template>
+    </p-dialog>
+
+    <!-- File IMPORT -->
+    <p-dialog [(visible)]="isFileImportDialog" [style]="{width: '450px '}" (onHide)="hideDialog()" header="Recipe" [modal]="true" styleClass="p-fluid" [draggable]="true">
+        <ng-template pTemplate="content">
+            <div class="field">
+                <label class="mb-3">File</label> <br>
+                <input #fileImport type="file" (change)="onSelectFile($event)" accept=".xlsx, application/msexcel"> <br>
+                @if(fileErrorMessage){
+                    <small class="p-error">{{fileErrorMessage}}</small>
+                }
+            </div>
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <button [disabled]="!selectedFile" pButton pRipple label="Submit" icon="pi pi-check" class="p-button-outlined" (click)="uploadFileSubmit()"></button>
+            <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-outlined" (click)="hideDialog()"></button>
+        </ng-template>
+    </p-dialog>
+
+    <p-confirmDialog #cd [style]="{width: '450px'}" icon="fa fa-question-circle">
+        <ng-template pTemplate="footer">
+            <button type="button" pButton 
+                icon="pi pi-check" label="Yes" 
+                (click)="cd.onAccept()">
+            </button>
+            <button type="button" pButton 
+                icon="pi pi-times" label="No"
+                (click)="cd.onReject()">
+            </button>
+          
+        </ng-template>
+    </p-confirmDialog>

@@ -1,0 +1,271 @@
+<p-toast />
+<div class="dynamicEquipments tableBorder">
+    <p-contextMenu #cmdynamicEqpmts [model]="contextMenuItems" appendTo="body"> </p-contextMenu>
+
+    <p-table #dt [value]="isTransposed ? transposedData : dataList" [columns]="cols" [(selection)]="selectedData" selectionMode="single" [loading]="loading" dataKey="plantDataId" [rowHover]="true" 
+        styleClass="p-datatable-gridlines p-datatable-sm p-datatable-striped" 
+        [contextMenu]="cmdynamicEqpmts" [(contextMenuSelection)]="selectedData" contextMenuSelectionMode="joint" (onContextMenuSelect)="contextMenuSelected($event)"
+        (onRowSelect)="onRowSelected($event)" (onRowUnselect)="onRowUnSelected()"
+        [style]="{'--data-columns': (cols.length + 1)}">
+        <ng-template pTemplate="caption">
+             <div class="table-caption">
+                 <div class="caption-title font-semibold">
+                     <span>{{equipmentName | uppercase}}</span>
+                 </div>
+                 <div class="caption-buttons">
+                     <span class="p-buttonset">
+                        @if(!editMode) {
+                            <button pButton pRipple pTooltip="Edit" tooltipPosition="top" icon='pi pi-pencil' class="p-button-warning p-button-sm" (click)="enableEdit()"></button>
+                        }
+                        @else {
+                            <button pButton [disabled]='!isModelChange' pRipple icon='pi pi-save' label="Save" class="p-button-info p-button-sm mr-1" (click)="saveSubmit()"></button>
+                            <button pButton pRipple icon='pi pi-times' label="Cancel" class="p-button-info p-button-sm" (click)="cancelEdit()"></button>
+                        }
+                     </span>
+                 </div>
+             </div>
+         </ng-template>
+
+        <ng-template pTemplate="header" let-columns>
+            @if(equipmentName == 'Stand'){
+                <tr>
+                    <th rowspan="2" style="font-weight: 700;">DEVICE</th>   
+                    <th rowspan="2"style="text-align: center;font-weight: 700;">ENABLE</th>                 
+                    <th colspan="4"  style="text-align: center;font-weight: 700;" class="lb-color">EQUIPMENT DATA</th>
+                    <th colspan="3" style="text-align: center;font-weight: 700;" class="lb-color">SPEED</th>
+                    <th colspan="2" style="text-align: center;font-weight: 700;" class="lb-color">TENSION REGULATION</th>
+                    <th colspan="5" style="text-align: center;font-weight: 700;" class="lb-color">LOOPER REGULATION</th>
+                    <th colspan="6" style="text-align: center;font-weight: 700;" class="lb-color">DELTA-V (HEAD)</th>
+                    <th colspan="6" style="text-align: center;font-weight: 700;" class="lb-color">DELTA-V (TAIL)</th>
+                </tr>
+                <tr style="text-align: center;">
+                      <!-- Equipment  -->
+                      <th style="font-weight: 700;text-align: center;" class="lb-color">DIAMETER</th>
+                      <th style="font-weight: 700;text-align: center;">GROOVE</th>
+                      <th style="font-weight: 700;text-align: center;">GEAR RATIO</th>
+                      <th style="font-weight: 700;text-align: center;">GEAR BOX SEL</th>
+                      <!-- speed -->
+                        <th style="font-weight: 700;text-align: center;" class="lb-color">RPM</th>
+                        <th style="font-weight: 700;text-align: center;">MPS</th>
+                        <th style="font-weight: 700;text-align: center;">R-FACTOR</th>
+                        <!-- Tension Regulation  -->
+                        <th style="font-weight: 700;text-align: center;" class="lb-color">ENABLE</th>
+                        <th style="font-weight: 700;text-align: center;">REFERENCE (N/mm2)</th>
+                        <!-- Looper Regulation  -->
+                        <th style="font-weight: 700;text-align: center;" class="lb-color">ENABLE</th>
+                        <th style="font-weight: 700;text-align: center;">REFERENCE (%)</th>
+                        <th style="font-weight: 700;text-align: center;">PROP GAIN</th>
+                        <th style="font-weight: 700;text-align: center;">ARM UP DELAY</th>
+                        <th style="font-weight: 700;text-align: center;">ARM DN DELAY</th>
+                        <!-- Delta-V head  -->
+                        <th style="font-weight: 700;text-align: center;" class="lb-color">ENABLE</th>
+                        <th style="font-weight: 700;text-align: center">REFERENCE (%)</th>
+                        <th style="font-weight: 700;text-align: center">DELAY DROP</th>
+                        <th style="font-weight: 700;text-align: center">DELAY RAISE</th>
+                        <th style="font-weight: 700;text-align: center">RAMP DROP</th>
+                        <th style="font-weight: 700;text-align: center">RAMP RAISE</th>
+                        <!-- Delta-V tail  -->
+                        <th style="font-weight: 700;text-align: center" class="lb-color">ENABLE</th>
+                        <th style="font-weight: 700;text-align: center">REFERENCE (%)</th>
+                        <th style="font-weight: 700;text-align: center">DELAY DROP</th>
+                        <th style="font-weight: 700;text-align: center">DELAY RAISE</th>
+                        <th style="font-weight: 700;text-align: center">RAMP DROP</th>
+                        <th style="font-weight: 700;text-align: center">RAMP RAISE</th>
+                </tr>
+           }
+           @else if(isTransposed) {
+                <!-- Transposed table header -->
+                <tr>
+                    <th colspan="2" class="p-bt" style="font-weight: 700;text-align: center;width: 30%;">
+                        PARAMETERS
+                    </th>
+                    @for(device of dataList; let last = $last; track device.equipmentName) {
+                        <th class="p-bl p-bt" [ngClass]="{'p-br' : last}" style="font-weight: 700; text-align: center;">
+                            @if(device.equipmentName == 'SDVR1') {
+                                DRUM
+                            }
+                            @else if(device.equipmentName == 'SDVR2') {
+                                HS
+                            }
+                            @else{
+                                {{ device.equipmentName }}
+                            }
+                        </th>
+                    }
+                </tr>
+           }
+           @else {
+                <tr>
+                    <th rowspan="1" class="p-bt" style="font-weight: 700;">
+                        DEVICE
+                    </th>
+                    @for(col of cols; let last = $last; track col.columnName) {
+                        <th class="p-bl p-bt" [ngClass]="{'p-br' : last}" style="font-weight: 700; text-align: center;">
+                            {{ col.columnName | camelCaseToSpace | uppercase }}
+                            @if(col.uom) {
+                                <span>({{col.uom}})</span> 
+                            }
+                        </th>
+                    }
+                </tr>
+            }
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex" let-columns='cols'>
+            @if(isTransposed) {
+                <!-- Transposed table body -->
+                <tr [ngStyle]="{'background-color': ri % 2 === 0 ? '#ffffff' : '#f8f9fa'}">
+                    @if(rowData.isUngrouped) {
+                        <!-- Ungrouped parameter - parameter name spans 2 columns -->
+                        <td [attr.colspan]="2" style="font-weight: 700; text-align: center;">
+                            {{ rowData.columnName | camelCaseToSpace | uppercase }}
+                            @if(rowData.columnIndex >= 0 && cols[rowData.columnIndex]?.uom) {
+                                <span>({{cols[rowData.columnIndex].uom}})</span>
+                            }
+                        </td>
+                    } @else {
+                        <!-- Grouped parameter -->
+                        <!-- Group label column -->
+                        @if(rowData.isFirstInGroup && rowData.groupName) {
+                            <td [attr.rowspan]="rowData.groupRowSpan" class="group-label-cell" style="font-weight: 700; text-align: center; vertical-align: middle;">
+                                {{ rowData.groupName | uppercase }}
+                            </td>
+                        }
+                        <!-- Parameter name column -->
+                        <td style="font-weight: 700; text-align: center;">
+                            {{ (rowData.displayName || rowData.columnName) | camelCaseToSpace | uppercase }}
+                            @if(rowData.columnIndex >= 0 && cols[rowData.columnIndex]?.uom) {
+                                <span>({{cols[rowData.columnIndex].uom}})</span>
+                            }
+                        </td>
+                    }
+                    @for(deviceValue of rowData.values; let lastDevice = $last; track deviceValue.deviceName) {
+                        <td style="text-align: center;" 
+                        [ngClass]="{'bg-yellow-200': deviceValue.value?.change,'lb-color': rowData.columnName=='Diameter' 
+                        || rowData.columnName=='SpeedRPM'|| rowData.columnName=='Tension_R_En' || rowData.columnName=='LC_Enable' || rowData.columnName=='FBSB_Enable' || rowData.columnName=='TBSB_Enable'}" 
+                        [ngStyle]="{'background-color': rowData.columnName === 'SpeedRPM' || rowData.columnName === 'SpeedMPS' ? '#fff7ed' : ''}">
+                            @if(rowData.columnIndex >= 0 && cols[rowData.columnIndex]?.editable && editMode && !deviceValue.value?.exclude){
+                                @if(cols[rowData.columnIndex]?.type=='Float32' || cols[rowData.columnIndex]?.type=='Int32'){
+                                    <p-inputnumber [(ngModel)]="deviceValue.value.sp" [min]="deviceValue.value.minValues" [max]="deviceValue.value.maxValues" [maxFractionDigits]="rowData.columnName==='RFactor' ? 6: 3" [useGrouping]="false"
+                                 pTooltip="Range from {{deviceValue.value.minValues}} to {{deviceValue.value.maxValues}}" tooltipPosition="right" (ngModelChange)="ngModelChangeTransposed(deviceValue.deviceIndex, rowData.columnIndex)" (focusout)="enforceMinMaxTransposed($event, deviceValue.deviceIndex, rowData.columnIndex)" (keydown.enter)="saveSubmit()" />
+                                }
+                                @else if(cols[rowData.columnIndex]?.type=='Boolean'){
+                                    <input type="checkbox" [(ngModel)]="deviceValue.value.sp" class="p-checkbox" (ngModelChange)="ngModelChangeTransposed(deviceValue.deviceIndex, rowData.columnIndex)" (keydown.enter)="saveSubmit()">
+                                }
+                            }
+                            @else {
+                                @if(deviceValue.value?.exclude){
+                                    
+                                }
+                                @else if(rowData.columnIndex >= 0 && (cols[rowData.columnIndex]?.type=='Float32' || cols[rowData.columnIndex]?.type=='Int32')){
+                                        {{ deviceValue.value?.sp | numberFormat:3 }}
+                                }
+                                @else if(rowData.columnIndex >= 0 && cols[rowData.columnIndex]?.type=='Boolean'){
+                                    <i class="pi px-1" [ngClass]="(deviceValue.value.sp=='1' || deviceValue.value.sp=='True')?'pi check-icon':'pi uncheck-icon'" style="font-size: 1.5rem"></i>
+                                }
+                                @else {
+                                        {{ deviceValue.value?.sp | numberFormat:3 }}
+                                }
+                            }
+                       </td>
+                    }
+                </tr>
+            }
+            @else {
+                <!-- Normal table body -->
+                <tr [pSelectableRow]="rowData" [pSelectableRowIndex]="ri" [pContextMenuRow]="rowData" [ngClass]="{'bg-rowEdit':rowData.change}" 
+                    [ngStyle]="{'background-color': ri % 2 === 0 ? '#ffffff' : '#f8f9fa'}" (keydown)="onKeydown($event, ri)">
+                    
+
+                    <td style="font-weight: 700;">
+                        {{rowData.equipmentName}}
+                    </td>
+                 
+                    @for(col of cols; let last = $last; track col.columnName) {
+                        @if(!rowData.value[col.columnName]?.exclude) {
+                            <td style="text-align: center;" 
+                            [ngClass]="{'bg-yellow-200': rowData.value[col.columnName]?.change,'lb-color': col.columnName=='Diameter' 
+                            || col.columnName=='SpeedRPM'|| col.columnName=='Tension_R_En' || col.columnName=='LC_Enable' || col.columnName=='FBSB_Enable' || col.columnName=='TBSB_Enable'}" 
+                            [ngStyle]="{'background-color': col.columnName === 'SpeedRPM' || col.columnName === 'SpeedMPS' ? '#fff7ed' : ''}">
+                                @if(col.editable && editMode){
+                                    @if(col.columnName=='GearboxSel'){
+                                        <div (click)="$event.stopPropagation()" (mousedown)="$event.stopPropagation()">
+                                            <p-select [options]="gearboxOptions"
+                                                [(ngModel)]="rowData.value[col.columnName].sp" optionLabel="label" optionValue="value"
+                                                appendTo="body"
+                                                 (onChange)="onGearboxSelChange(ri, col)" (keydown.enter)="saveSubmit()" style="width: 100%" class="deqp-select-input"></p-select>
+                                        </div>
+                                    }
+                                    @else if(col.type=='Float32' || col.type=='Int32'){
+                                        <p-inputnumber [(ngModel)]="rowData.value[col.columnName].sp" [min]="rowData.value[col.columnName].minValues" [max]="rowData.value[col.columnName].maxValues" [maxFractionDigits]="col.columnName==='RFactor' ? 6: 3" [useGrouping]="false"
+                                     pTooltip="Range from {{rowData.value[col.columnName].minValues}} to {{rowData.value[col.columnName].maxValues}}" tooltipPosition="right" (ngModelChange)="ngModelChange(ri, col)" (focusout)="enforceMinMax($event, ri, col)" (keydown.enter)="saveSubmit()" />
+                                    }
+                                    @else if(col.type=='Boolean'){
+                                        <input type="checkbox" [(ngModel)]="rowData.value[col.columnName].sp" class="p-checkbox" (ngModelChange)="ngModelChange(ri, col)" (keydown.enter)="saveSubmit()">
+                                    }
+                                }
+                                @else if(col.editable && !editMode){
+                                    @if(col.columnName=='GearboxSel'){
+                                        {{ getGearboxLabel(rowData.value[col.columnName]?.sp) }}
+                                    }
+                                    @else if(col.type=='Float32' || col.type=='Int32'){
+                                            {{ rowData.value[col.columnName]?.sp | numberFormat:3 }}
+                                    }
+                                    @else if(col.type=='Boolean'){
+                                        <i class="pi px-1" [ngClass]="(rowData.value[col.columnName].sp=='1' || rowData.value[col.columnName].sp=='True')?'pi check-icon':'pi uncheck-icon'" style="font-size: 1.5rem"></i>
+                                    }
+                                }
+                                @else {
+                                    @if(col.columnName=='GearboxSel'){
+                                        {{ getGearboxLabel(rowData.value[col.columnName]?.sp) }}
+                                    }
+                                    @else if(col.type=='Float32' || col.type=='Int32'){
+                                            {{ rowData.value[col.columnName]?.sp | numberFormat:3 }}
+                                    }
+                                    @else if(col.type=='Boolean'){
+                                        <i class="pi px-1" [ngClass]="(rowData.value[col.columnName].sp=='1' || rowData.value[col.columnName].sp=='True')?'pi check-icon':'pi uncheck-icon'" style="font-size: 1.5rem"></i>
+                                    }
+                                    @else {
+                                            {{ rowData.value[col.columnName]?.sp | numberFormat:3 }}
+                                    }
+                                }
+                           </td>
+                        }
+                        @else{
+                            <td [ngClass]="{'bg-yellow-200': rowData.value[col.columnName]?.change,'lb-color': col.columnName=='Diameter' 
+                            || col.columnName=='SpeedRPM'|| col.columnName=='Tension_R_En' || col.columnName=='LC_Enable' || col.columnName=='FBSB_Enable' || col.columnName=='TBSB_Enable'}" 
+                            [ngStyle]="{'background-color': col.columnName === 'SpeedRPM' ? '#fff7ed' : ''}"></td>
+                        }
+                    }
+                </tr>
+            }
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+             <tr>
+                 <td [colSpan]="(cols.length + 2)">No Records</td>
+             </tr>
+         </ng-template>
+    </p-table>
+
+    <!-- L1 PROGRESS DIALOG -->
+         <p-dialog [(visible)]="dlgProgress" header="Progress" [style]="{width: '450px'}"
+        [closable]="false" [modal]="true" styleClass="p-fluid" [draggable]="false">
+        <ng-template pTemplate="content">
+            <p-progressBar mode="indeterminate"></p-progressBar>
+        </ng-template>
+    </p-dialog>
+    
+    <p-confirmDialog #cd [style]="{width: '450px'}" icon="fa fa-question-circle" [defaultFocus]="'accept'">
+        <ng-template pTemplate="footer">
+            <button type="button" pButton 
+                icon="pi pi-check" label="Yes" 
+                (click)="cd.onAccept()"
+                #acceptButton>
+            </button>
+            <button type="button" pButton 
+                icon="pi pi-times" label="No"
+                (click)="cd.onReject()">
+            </button>
+          
+        </ng-template>
+    </p-confirmDialog>
+</div>

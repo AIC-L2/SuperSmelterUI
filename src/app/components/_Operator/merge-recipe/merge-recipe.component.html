@@ -1,0 +1,76 @@
+<div class="merge-recipe-container">
+  <div class="equipment-selection-section">
+    <h3 class="section-title">Select Equipments</h3>
+    
+    <p-table 
+      #dt 
+      [value]="equipTableDataList" 
+      [(selection)]="selectedEquipTableData" 
+      selectionMode="single" 
+      [loading]="loading" 
+      dataKey="id" 
+      [rowHover]="true" 
+      editMode="row" 
+      styleClass="p-datatable-gridlines p-datatable-sm p-datatable-striped" 
+      [scrollable]="true" 
+      responsiveLayout="scroll"
+      [scrollHeight]="'400px'">
+      
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="checkbox-column">
+            <p-checkbox 
+              [(ngModel)]="selectAll" 
+              (onChange)="checkAllEvent($event.checked)"
+              [binary]="true">
+            </p-checkbox>
+          </th>
+          <th class="name-column">
+            Name
+            <p-columnFilter 
+              type="text" 
+              field="name" 
+              matchMode="contains" 
+              display="menu">
+            </p-columnFilter>
+          </th> 
+          <th class="description-column">
+            Description
+          </th> 
+        </tr>
+      </ng-template>
+      
+      <ng-template pTemplate="body" let-rowData let-ri="rowIndex">
+        <tr 
+          [pSelectableRow]="rowData" 
+          [pSelectableRowIndex]="ri" 
+          [pEditableRow]="rowData" 
+          [pContextMenuRow]="rowData" 
+          (keydown)="onKeydown($event, ri)">
+          <td class="checkbox-column">
+            <p-checkbox 
+              [(ngModel)]="rowData.isSelected" 
+              (onChange)="onChangeCheckbox()"
+              [binary]="true">
+            </p-checkbox>
+          </td>
+          <td class="name-column">
+            {{rowData.name}}
+          </td> 
+          <td class="description-column">
+            {{rowData.description}}
+          </td> 
+        </tr>
+      </ng-template>
+      
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="3" class="text-center p-4">
+            <i class="pi pi-info-circle mr-2"></i>
+            No records found
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

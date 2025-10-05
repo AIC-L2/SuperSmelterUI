@@ -1,0 +1,296 @@
+.opOverview {
+    padding: 5px;
+    ::ng-deep .p-tabview .p-tabview-panels {
+        padding: 0.3rem;
+    }
+    
+    // PrimeNG Tabs Styling
+    ::ng-deep .operator-tabs {
+        .p-tabs-nav {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px 6px 0 0;
+            
+            .p-tabs-nav-list {
+                .p-tabs-nav-item {
+                    .p-tabs-nav-link {
+                        padding: 12px 20px;
+                        font-weight: 500;
+                        color: #495057;
+                        border: none;
+                        background: transparent;
+                        transition: all 0.2s ease;
+                        
+                        &:hover {
+                            background: #e9ecef;
+                            color: #212529;
+                        }
+                        
+                        &.p-highlight {
+                            background: #007bff;
+                            color: white;
+                            border-radius: 4px;
+                            margin: 2px;
+                        }
+                    }
+                }
+            }
+            
+            // Navigation buttons styling
+            .p-tabs-nav-prev,
+            .p-tabs-nav-next {
+                background: #007bff;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                width: 32px;
+                height: 32px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 4px;
+                
+                &:hover {
+                    background: #0056b3;
+                }
+                
+                &:disabled {
+                    background: #6c757d;
+                    cursor: not-allowed;
+                }
+            }
+        }
+        
+        .p-tabs-panels {
+            // background: white;
+            // border: 1px solid #dee2e6;
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            padding: 20px;
+            min-height: 300px;
+        }
+        
+        // Ensure tab panels have proper background
+        .p-tabpanel {
+            background: white !important;
+            
+            .p-tabpanel-content {
+                background: white !important;
+                padding: 0;
+            }
+        }
+    }
+    
+    // Ensure recipe component takes full width
+    app-recipe {
+        width: 100% !important;
+        display: block;
+    }
+    
+    .p-grid {
+        width: 100%;
+    }
+    
+    .p-col-12 {
+        width: 100%;
+        padding: 0;
+    }
+    
+    .card {
+        width: 100%;
+        padding: 5px;
+        box-shadow: 0 2px 1px -1px rgb(0 0 0 / 20%), 0 1px 1px 0 rgb(0 0 0 / 14%), 0 1px 3px 0 rgb(0 0 0 / 12%);
+        border-radius: 4px;
+        background: white;
+        display: flex;
+    }
+    .operatorTabs {
+        margin-top: 2px;
+        // background: white;
+        
+        // Ensure all child elements have proper background
+        // ::ng-deep * {
+        //     background: white;
+        // }
+        
+        // Override any dark backgrounds
+        ::ng-deep .p-tabpanel {
+            background: white !important;
+            
+        }
+        
+        ::ng-deep .p-tabpanel-content {
+            background: white !important;
+        }
+        
+        ::ng-deep app-dynamic-equipment {
+            background: white !important;
+            display: block;
+            // margin-bottom: 10px;
+        }
+        
+        // Force all table elements to have white background
+        // ::ng-deep .p-datatable {
+        //     background: white !important;
+            
+        //     .p-datatable-wrapper {
+        //         background: white !important;
+        //     }
+            
+        //     .p-datatable-table {
+        //         background: white !important;
+        //     }
+            
+        //     .p-datatable-tbody {
+        //         background: white !important;
+                
+        //         > tr {
+        //             background: white !important;
+                    
+        //             > td {
+        //                 background: white !important;
+                        
+        //                 * {
+        //                     background: white !important;
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
+        
+        // Override any dark overlays globally
+        // ::ng-deep * {
+        //     background-color: white !important;
+        // }
+        
+        // Specific overrides for table content
+        // ::ng-deep .p-datatable .p-datatable-tbody > tr > td,
+        // ::ng-deep .p-datatable .p-datatable-tbody > tr,
+        // ::ng-deep .p-datatable .p-datatable-tbody {
+        //     background: white !important;
+        //     background-color: white !important;
+        //     background-image: none !important;
+        // }
+    }
+
+    .p-tabpanels {
+        padding: 3px !important;
+      }
+    .container {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .title {
+        font-size: 17px;
+        padding-right: 10px;
+    }
+    .data {
+        font-size: 17px !important;
+    }
+    // .chip {
+    //     margin-right: 60px;
+    // }
+    .div_desc {
+        width: 17%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        margin-right: 0px;
+    }
+    .active {
+        background-color: green;
+    }
+    .default {
+        background-color: #0288d1;
+    }
+    .inputWidth {
+        width: 70px !important;
+    }
+    .tab-btn-panel {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: -54px;
+        margin-bottom: 12px;
+    }
+
+    // Grid layout for Auxiliary tab
+    .auxiliary-grid {
+        width: 100%;
+        
+        .grid-container {
+            /* Masonry-style columns: fill vertical space first */
+            column-count: 4;
+            column-gap:  30px;
+            width: 100%;
+            height: 101vh;
+
+            .grid-item {
+                display: inline-block;
+                width: 100%;
+                margin: 0 0 5px;
+                background: white;
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                overflow: hidden;
+                // transition: transform 0.2s ease, box-shadow 0.2s ease;
+                break-inside: avoid;
+
+                // &:hover {
+                //     transform: translateY(-2px);
+                //     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+                // }
+
+                // Remove scrollbars from dynamic equipment tables
+                ::ng-deep app-dynamic-equipment {
+                    .dynamicEquipments {
+                        .p-datatable {
+                            .p-datatable-wrapper { overflow: visible !important; }
+                            .p-datatable-table { overflow: visible !important; }
+                            .p-datatable-tbody { overflow: visible !important; }
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Responsive adjustments
+        @media (max-width: 1600px) { .grid-container { column-count: 3; column-gap: 10px; } }
+        @media (max-width: 1200px) { .grid-container { column-count: 2; column-gap: 8px; } }
+        @media (max-width: 768px)  { .grid-container { column-count: 1; column-gap: 8px; } }
+    }
+
+    .reportDialog {
+        .loader-container {
+            width: 100%;
+            height: 70%;
+            display: flex;
+            align-items: center;
+            flex-flow: column;
+            position: absolute;
+        }
+
+        .loader {
+            border: 6px solid #f3f3f3;
+            border-top-color: #0ea5e9;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            position: absolute;
+            top: 50%;
+            margin: 0px auto;
+            z-index: 9999;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    }
+}

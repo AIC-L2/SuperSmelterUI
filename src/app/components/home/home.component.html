@@ -1,0 +1,684 @@
+<div class="home-container">
+    <div class="dashboard-container">
+      
+      <div class="dashboard-layout" [class.sidebar-visible]="isSidebarVisible">
+        <!-- Toggle button completely outside sidebar -->
+        <button class="sidebar-toggle-external" (click)="onBackClick()" [class.sidebar-hidden]="!isSidebarVisible">
+          <span class="toggle-arrow">&lt;</span>
+        </button>
+  
+        <!-- Left Sidebar - Report Filters -->
+        <div class="sidebar" *ngIf="isSidebarVisible">
+            <div #filtersSentinel class="filters-sentinel"></div>
+            <div #filtersCard class="filters-card">
+            <h3>📊 Report Filters</h3>
+            
+            <!-- Filter Type Selection -->
+            <div class="filter-section">
+              <h4>Filter Type</h4>
+              <div class="radio-group">
+                <div class="radio-item">
+                  <p-radioButton
+                    name="filterType"
+                    value="shift"
+                    [(ngModel)]="selectedFilter"
+                    inputId="shift"
+                    (onClick)="onFilterChange()"
+                  />
+                  <label for="shift">Shift</label>
+                </div>
+                <div class="radio-item">
+                  <p-radioButton
+                    name="filterType"
+                    value="day" 
+                    [(ngModel)]="selectedFilter"
+                    inputId="day"
+                    (onClick)="onFilterChange()"
+                  />
+                  <label for="day">Day</label>
+                </div>
+                <div class="radio-item">
+                  <p-radioButton
+                    name="filterType"
+                    value="month"
+                    [(ngModel)]="selectedFilter"
+                    inputId="month"
+                    (onClick)="onFilterChange()"
+                  />
+                  <label for="month">Month</label>
+                </div>
+                <div class="radio-item">
+                  <p-radioButton
+                    name="filterType"
+                    value="periodic"
+                    [(ngModel)]="selectedFilter"
+                    inputId="periodic"
+                    (onClick)="onFilterChange()"
+                  />
+                  <label for="periodic">Periodic</label>
+                </div>
+              </div>
+            </div>
+    
+            <!-- Filter Controls -->
+            <div class="filter-section">
+              <!-- Shift Filter -->
+              <div *ngIf="selectedFilter === 'shift'" class="filter-controls">
+                <div class="field">
+                  <label for="shiftDate">Date</label>
+                  <p-datePicker
+                    [(ngModel)]="shiftDate"
+                    inputId="shiftDate"
+                    dateFormat="dd/mm/yy"
+                    [maxDate]="maxDate"
+                    [showIcon]="true"
+                    styleClass="w-full"
+                  ></p-datePicker>
+                </div>
+                <div class="field">
+                  <label for="shiftSelect">Shift</label>
+                  <p-select
+                    [options]="shifts"
+                    [(ngModel)]="selectedShift"
+                    inputId="shiftSelect"
+                    placeholder="Select Shift"
+                    styleClass="w-full"
+                  ></p-select>
+                </div>
+              </div>
+    
+              <!-- Day Filter -->
+              <div *ngIf="selectedFilter === 'day'" class="filter-controls">
+                <div class="field">
+                  <label for="dayDate">Date</label>
+                  <p-datePicker
+                    [(ngModel)]="dayDate"
+                    inputId="dayDate"
+                    dateFormat="dd/mm/yy"
+                    [maxDate]="maxDate" 
+                    [showIcon]="true"
+                    styleClass="w-full"
+                  ></p-datePicker>
+                </div>
+              </div>
+    
+              <!-- Month Filter -->
+              <div *ngIf="selectedFilter === 'month'" class="filter-controls">
+                <div class="field">
+                  <label for="monthDate">Month</label>
+                  <p-datePicker
+                    [(ngModel)]="monthDate"
+                    inputId="monthDate"
+                    dateFormat="mm/yy"
+                    [maxDate]="maxDate"
+                    view="month"
+                    [showIcon]="true"
+                    styleClass="w-full"
+                  ></p-datePicker>
+                </div>
+              </div>
+    
+              <!-- Periodic Filter -->
+              <div *ngIf="selectedFilter === 'periodic'" class="filter-controls">
+                <div class="field">
+                  <label for="startDate">Start Date</label>
+                  <p-datePicker
+                    [(ngModel)]="startDate"
+                    inputId="startDate"
+                    dateFormat="dd/mm/yy"
+                    [maxDate]="maxDate"
+                    [showTime]="true"
+                    [showIcon]="true"
+                    styleClass="w-full"
+                  ></p-datePicker>
+                </div>
+                <div class="field">
+                  <label for="endDate">End Date</label>
+                  <p-datePicker
+                    [(ngModel)]="endDate"
+                    inputId="endDate"
+                    dateFormat="dd/mm/yy"
+                    [maxDate]="maxDate"
+                    [showTime]="true"
+                    [showIcon]="true"
+                    styleClass="w-full"
+                  ></p-datePicker>
+                </div>
+              </div>
+    
+                           <!-- Load Report Button -->
+               <div class="load-button">
+                 <p-button 
+                   [label]="reportLoading ? 'Generating Report...' : 'Load Report'" 
+                   (onClick)="loadReport()" 
+                   styleClass="p-button-success w-full"
+                   [disabled]="!canLoadReport() || reportLoading"
+                   [loading]="reportLoading"
+                 ></p-button>
+               </div>
+            </div>
+          </div>
+        </div>
+    
+        <!-- Main Content Area -->
+        <div class="main-content">
+                   <!-- Report Display Area -->
+           <div class="report-section" *ngIf="reportUrl || reportLoading">
+             <div class="report-header">
+               <h3>📈 Generated Report</h3>
+               <div class="report-actions" *ngIf="reportUrl && !reportLoading">
+                 <button 
+                   class="btn btn-secondary" 
+                   (click)="showDashboardContent = !showDashboardContent"
+                 >
+                   {{ showDashboardContent ? '📊 Show Report' : '📋 Show Dashboard' }}
+                 </button>
+                 <button 
+                   class="btn btn-outline" 
+                   (click)="clearReport()"
+                 >
+                   ❌ Clear Report
+                 </button>
+               </div>
+             </div>
+             
+             <!-- Report Loading State -->
+             <div class="report-loading-container" *ngIf="reportLoading">
+               <div class="report-loading-content">
+                 <div class="report-loading-spinner"></div>
+                 <h4>Generating Report...</h4>
+                 <p>Please wait while we process your request</p>
+               </div>
+             </div>
+             
+             <!-- Report Content -->
+             <div class="report-container" *ngIf="!showDashboardContent && reportUrl && !reportLoading">
+               <iframe 
+                 [src]="reportUrl" 
+                 class="report-iframe" 
+                 title="Report"
+                 frameborder="0"
+               ></iframe>
+             </div>
+           </div>
+    
+                   <!-- Dashboard Content (when no report is loaded or when user wants to see dashboard) -->
+           <div class="dashboard-content" *ngIf="!reportUrl || showDashboardContent">
+             <!-- Loading State -->
+             <div class="loading-state" *ngIf="loading">
+               <div class="loading-spinner"></div>
+               <p>Loading dashboard data...</p>
+             </div>
+             
+             <!-- Dashboard Data -->
+             <div *ngIf="!loading">
+               <!-- Key Metrics Cards -->
+               <div class="metrics-section" *ngIf="metricsData">
+                 <div class="metric-card product-length">
+                   <div class="metric-content">
+                    <div class="pl-single-line">
+                      <span class="metric-label">Product: </span>
+                      <span class="metric-value">{{ metricsData.product.value }}</span>
+                      <span class="metric-label">Length: </span>
+                      <span class="metric-value">{{ metricsData.length.value.toLocaleString() }}</span>
+                    </div>
+                     <div class="tph-h2h-section">
+                       <div class="summary-table">
+                         <div class="table-header-row target-actual">
+                           <div class="header-cell label-cell"></div>
+                           <div class="header-cell">Target</div>
+                           <div class="header-cell">Actual</div>
+                         </div>
+                         <div class="table-row target-actual">
+                           <div class="data-cell label-cell">TPH</div>
+                           <div class="data-cell">
+                             <input type="text" class="summary-input" [placeholder]="productionSummaryItems[0].target">
+                           </div>
+                           <div class="data-cell">
+                             <input type="text" class="summary-input" [placeholder]="productionSummaryItems[0].actual">
+                           </div>
+                         </div>
+                         <div class="table-row target-actual">
+                           <div class="data-cell label-cell">H2H</div>
+                           <div class="data-cell">
+                             <input type="text" class="summary-input" [placeholder]="productionSummaryItems[1].target">
+                           </div>
+                           <div class="data-cell">
+                             <input type="text" class="summary-input" [placeholder]="productionSummaryItems[1].actual">
+                           </div>
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+                 </div>
+                 <div class="delay-cards-row">
+                   <div class="metric-card downtime">
+                     <div class="metric-icon">⏱️</div>
+                     <div class="metric-content">
+                       <h3 class="yield-heading">Total Delay</h3>
+                       <div class="metric-value">{{ delaySummaryItems[0].value | timeFormat }}</div>
+                     </div>
+                   </div>
+  
+                   <div class="metric-card downtime">
+                     <div class="metric-icon">⏱️</div>
+                     <div class="metric-content">
+                       <h3 class="yield-heading">Current Delay</h3>
+                       <div class="metric-value">{{ delaySummaryItems[1].value | timeFormat }}</div>
+                     </div>
+                   </div>
+                 </div>
+                 
+                 <div class="metric-card yield">
+                   <div class="metric-icon">📊</div>
+                   <div class="metric-content">
+                     <h3 class="yield-heading">Yield Rate</h3>
+                     <div class="yield-grid">
+                      <span class="yield-label">Target</span>
+                       <span class="yield-label">Actual</span>
+                       <span class="yield-value">{{ metricsData.yield_metric.target ?? 0 }}%</span>
+                       <span class="yield-value">{{ metricsData.yield_metric.value }}%</span>
+                     </div>
+                   </div>
+                 </div>
+                 
+                 <div class="metric-card utilization">
+                   <div class="metric-content">
+                     <h3 class="yield-heading">Utilization</h3>
+                     <div class="summary-table">
+                       <div class="table-header-row shift-data">
+                        <div class="header-cell label-cell"></div>
+                        <div class="header-cell">YTD</div>
+                        <div class="header-cell">MTD</div>
+                        <div class="header-cell">GOAL</div>
+                      </div>
+                      <div class="table-row shift-data" *ngFor="let item of shiftDataItems">
+                        <div class="data-cell label-cell">{{ item.label }}</div>
+                        <div class="data-cell">
+                          <input type="text" class="summary-input" [placeholder]="item.ytd">
+                        </div>
+                        <div class="data-cell">
+                          <input type="text" class="summary-input" [placeholder]="item.mtd">
+                        </div>
+                        <div class="data-cell">
+                          <input type="text" class="summary-input" [placeholder]="item.goal">
+                        </div>
+                      </div>
+                    </div>
+                   </div>
+                 </div>
+  
+              </div>
+  
+               <!-- Production cards rearranged as requested: Summary, Day, Hourly -->
+               <div class="production-row">
+                 <!-- Production Summary Section (moved to first position) -->
+                 <div class="production-summary-section">
+                   <div class="summary-header">
+                     <h3>PRODUCTION SUMMARY</h3>
+                   </div>
+                   <div class="summary-table">
+                     <!-- All items with MTD/YTD (TPH and H2H removed) -->
+                     <div class="table-header-row mtd-ytd">
+                       <div class="header-cell label-cell"></div>
+                       <div class="header-cell">MTD</div>
+                       <div class="header-cell">YTD</div>
+                     </div>
+                     <div class="table-row mtd-ytd" *ngFor="let item of productionSummaryItems.slice(2)">
+                       <div class="data-cell label-cell">{{ item.label }}</div>
+                       <div class="data-cell">
+                         <input type="text" class="summary-input" [placeholder]="item.mtd">
+                       </div>
+                       <div class="data-cell">
+                         <input type="text" class="summary-input" [placeholder]="item.ytd">
+                       </div>
+                     </div>
+                   </div>
+                 </div>
+  
+                 <!-- Day Production Section (moved to second position) -->
+                 <div class="production-summary-section">
+                   <div class="summary-header">
+                     <h3>DAY PRODUCTION</h3>
+                   </div>
+                   <div class="summary-table">
+                     <!-- Header inputs -->
+                     <div class="table-header-row day-production-inputs">
+                       <div class="header-cell">Start time</div>
+                       <div class="header-cell">Stop Time</div>
+                       <div class="header-cell">Product</div>
+                       <div class="header-cell">Speed (m/s)</div>
+                     </div>
+                     <div class="day-production-inputs">
+                       <input type="text" class="header-input">
+                       <input type="text" class="header-input">
+                       <input type="text" class="header-input">
+                       <input type="text" class="header-input">
+                     </div>
+                     
+                     <!-- Production data table -->
+                     <div class="table-header-row day-production">
+                       <div class="header-cell label-cell"></div>
+                       <div class="header-cell">No of PCS</div>
+                       <div class="header-cell">Qty (MT)</div>
+                       <div class="header-cell">%</div>
+                     </div>
+                     <div class="table-row day-production" *ngFor="let item of dayProductionItems">
+                       <div class="data-cell label-cell">{{ item.label }}</div>
+                       <div class="data-cell">
+                         <input type="text" class="summary-input" [placeholder]="item.pcs">
+                       </div>
+                       <div class="data-cell">
+                         <input type="text" class="summary-input" [placeholder]="item.qty">
+                       </div>
+                       <div class="data-cell">
+                         <input type="text" class="summary-input" [placeholder]="item.percentage">
+                       </div>
+                     </div>
+                   </div>
+                 </div>
+  
+                 <!-- (Roll Change stack moved near Utilization above) -->
+  
+                 <div class="production-stack">
+                   <!-- Production Instructions Section (directly under Roll Change) -->
+                   <div class="production-summary-section roll-instructions-card">
+                     <div class="summary-header">
+                       <h3>📋 PRODUCTION INSTRUCTIONS</h3>
+                     </div>
+                     <div class="instruction-list" [class.scrollable]="isInstructionsSectionScrollable">
+                      <div class="instruction-item" *ngFor="let instruction of Instructions; let i = index">
+                        <span class="instruction-number">{{ i + 1 }}</span>
+                       <input type="text" class="instruction-input" [placeholder]="instruction.text" [(ngModel)]="instruction.text">
+                       <button type="button" class="remove-btn instruction-remove" (click)="removeInstruction(i)" *ngIf="Instructions.length > 1">
+                         <span>×</span>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="add-item-section">
+                      <button type="button" class="add-item-btn" (click)="addInstruction()">
+                        <span>+</span> Add Instruction
+                      </button>
+                     </div>
+                   </div>
+                 </div>
+  
+                 <!-- OEE Column Placeholder (Roll Change moved next to Utilization) -->
+               </div>
+  
+              <!-- Third Row: Production Trend, Hourly Production, Roll Change -->
+              <div class="production-row">
+                <!-- Production Trend Card -->
+                <div class="production-summary-section">
+                  <div class="summary-header">
+                    <h3>PRODUCTION TREND</h3>
+                  </div>
+                  <div class="chart-container">
+                    <h3>Production Trend (Last 7 Days)</h3>
+                    <div class="chart-placeholder">
+                      <div class="chart-bars">
+                        <div 
+                          class="bar" 
+                          *ngFor="let trend of productionTrendItems; let i = index"
+                          [style.height]="trend.percentage + '%'"
+                          [title]="trend.day + ': ' + trend.value.toLocaleString() + ' units'"
+                        >
+                          <div class="bar-quantity">{{ trend.value ? trend.value.toLocaleString() : 'No Data' }}</div>
+                        </div>
+                      </div>
+                      <div class="chart-labels">
+                        <span *ngFor="let trend of productionTrendItems">{{ trend.day }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+  
+                <!-- Hourly Production with Roll Change stacked below -->
+                <div class="production-stack">
+                  <div class="production-summary-section hourly-card">
+                    <div class="summary-header">
+                      <h3>HOURLY PRODUCTION</h3>
+                    </div>
+                    <div class="summary-table">
+                      <div class="table-header-row hourly-production">
+                        <div class="header-cell label-cell"></div>
+                        <div class="header-cell">Rolled</div>
+                        <div class="header-cell">Hot out</div>
+                        <div class="header-cell">Cobble</div>
+                      </div>
+                      <div class="table-row hourly-production" *ngFor="let item of hourlyProductionItems">
+                        <div class="data-cell label-cell">{{ item.label }}</div>
+                        <div class="data-cell">
+                          <input type="text" class="summary-input" [placeholder]="item.rolled">
+                        </div>
+                        <div class="data-cell">
+                          <input type="text" class="summary-input" [placeholder]="item.hotOut">
+                        </div>
+                        <div class="data-cell">
+                          <input type="text" class="summary-input" [placeholder]="item.cobble">
+                        </div>
+                      </div>
+                      <div class="table-row yield-loss">
+                        <div class="data-cell label-cell">YIELD LOSS</div>
+                        <div class="data-cell yield-loss-input">
+                          <input type="text" class="summary-input" placeholder="">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+  
+                  <div class="production-summary-section">
+                    <div class="summary-header">
+                      <h3>ROLL CHANGE</h3>
+                    </div>
+                    <div class="summary-table">
+                      <div class="table-header-row roll-change">
+                        <div class="header-cell label-cell"></div>
+                        <div class="header-cell">Current</div>
+                        <div class="header-cell">Last Change</div>
+                        <div class="header-cell">Roll Consum</div>
+                      </div>
+                      <div class="table-row roll-change" *ngFor="let item of rollChangeItems">
+                        <div class="data-cell label-cell">{{ item.label }}</div>
+                        <div class="data-cell">
+                          <input type="text" class="summary-input" [placeholder]="item.current">
+                        </div>
+                        <div class="data-cell">
+                          <input type="text" class="summary-input" [placeholder]="item.lastChange">
+                        </div>
+                        <div class="data-cell">
+                          <input type="text" class="summary-input" [placeholder]="item.rollConsum">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+  
+                <!-- Consumption Card moved to third row -->
+                <div class="production-summary-section">
+                  <div class="summary-header">
+                    <h3>CONSUMPTION</h3>
+                  </div>
+                  <div class="summary-table">
+                    <div class="table-header-row consumption">
+                      <div class="header-cell label-cell"></div>
+                      <div class="header-cell">Current</div>
+                      <div class="header-cell">Yester</div>
+                      <div class="header-cell">MTD</div>
+                      <div class="header-cell">YTD</div>
+                    </div>
+                    <div class="table-row consumption" *ngFor="let item of consumptionItems">
+                      <div class="data-cell label-cell">{{ item.label }}</div>
+                      <div class="data-cell">
+                        <input type="text" class="summary-input" [placeholder]="item.current">
+                      </div>
+                      <div class="data-cell">
+                        <input type="text" class="summary-input" [placeholder]="item.yester">
+                      </div>
+                      <div class="data-cell">
+                        <input type="text" class="summary-input" [placeholder]="item.mtd">
+                      </div>
+                      <div class="data-cell">
+                        <input type="text" class="summary-input" [placeholder]="item.ytd">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+  
+              </div>
+  
+               <!-- Second Row: Yield Data, Consumption & Delay Column, Instructions & Alerts Column -->
+               <div class="production-row fourth-row">
+                 <!-- Delay Section -->
+                 <div class="production-summary-section">
+                   <div class="summary-header">
+                     <h3>DELAY</h3>
+                   </div>
+                   <div class="summary-table">
+                     <!-- Delay Summary -->
+                     <div class="delay-summary">
+                       <div class="table-row delay-summary-row" *ngFor="let item of delaySummaryItems">
+                         <div class="data-cell label-cell">{{ item.label }}</div>
+                         <div class="data-cell">
+                           <input type="text" class="summary-input" [placeholder]="item.value | timeFormat">
+                         </div>
+                       </div>
+                     </div>
+                     
+                     <!-- Delay Types -->
+                     <div class="delay-types-section" [class.scrollable]="isDelaySectionScrollable">
+                       <div class="table-header-row delay-types">
+                         <div class="header-cell label-cell">Delay Type</div>
+                         <div class="header-cell">From/To</div>
+                       </div>
+                       <div class="table-row delay-types" *ngFor="let delay of delayTypes; let i = index">
+                         <div class="data-cell label-cell">
+                           <input type="text" class="summary-input" [placeholder]="delay.type" [(ngModel)]="delay.type">
+                         </div>
+                         <div class="data-cell">
+                           <input type="text" class="summary-input" [placeholder]="delay.fromTo" [(ngModel)]="delay.fromTo">
+                         </div>
+                         <div class="data-cell action-cell">
+                           <button type="button" class="remove-btn" (click)="removeDelayRow(i)" *ngIf="delayTypes.length > 1">
+                             <span>×</span>
+                           </button>
+                         </div>
+                       </div>
+                       
+                     </div>
+                     <div class="add-row-section">
+                      <button type="button" class="add-row-btn" (click)="addDelayRow()">
+                        <span>+</span> Add Delay Row
+                      </button>
+                    </div>
+                   </div>
+                 </div>
+  
+                 <!-- Consumption and Delay Column -->
+                 <div class="production-column">
+                   <!-- Yield Data Section -->
+                   <div class="production-summary-section">
+                     <div class="summary-header">
+                       <h3>YIELD DATA</h3>
+                     </div>
+                     <div class="summary-table">
+                       <!-- Main Yield Data table -->
+                       <div class="table-header-row yield-data">
+                         <div class="header-cell label-cell"></div>
+                         <div class="header-cell">GOAL</div>
+                         <div class="header-cell">MTD</div>
+                         <div class="header-cell">YTD</div>
+                       </div>
+                       <div class="table-row yield-data" *ngFor="let item of yieldDataItems">
+                         <div class="data-cell label-cell">{{ item.label }}</div>
+                         <div class="data-cell">
+                           <input type="text" class="summary-input" [placeholder]="item.goal">
+                         </div>
+                         <div class="data-cell">
+                           <input type="text" class="summary-input" [placeholder]="item.mtd">
+                         </div>
+                         <div class="data-cell">
+                           <input type="text" class="summary-input" [placeholder]="item.ytd">
+                         </div>
+                       </div>
+                       
+                       <!-- Shift Data sub-section -->
+                       <!-- <div class="shift-section">
+                         <div class="shift-header">
+                           <h4>SHIFT</h4>
+                         </div>
+                         <div class="table-header-row shift-data">
+                           <div class="header-cell label-cell"></div>
+                           <div class="header-cell">YTD</div>
+                           <div class="header-cell">MTD</div>
+                           <div class="header-cell">GOAL</div>
+                         </div>
+                         <div class="table-row shift-data" *ngFor="let item of shiftDataItems">
+                           <div class="data-cell label-cell">{{ item.label }}</div>
+                           <div class="data-cell">
+                             <input type="text" class="summary-input" [placeholder]="item.ytd">
+                           </div>
+                           <div class="data-cell">
+                             <input type="text" class="summary-input" [placeholder]="item.mtd">
+                           </div>
+                           <div class="data-cell">
+                             <input type="text" class="summary-input" [placeholder]="item.goal">
+                           </div>
+                         </div>
+                       </div> -->
+                     </div>
+                   </div>
+                 </div>
+  
+                 <!-- Instructions and Alerts Column -->
+                 <div class="production-column">
+                 
+                   <!-- Alerts Section -->
+                   <div class="production-summary-section">
+                     <div class="summary-header">
+                       <h3>🚨 ACTIVE ALERTS</h3>
+                     </div>
+                     <div class="alert-list" [class.scrollable]="isAlertsSectionScrollable">
+                       <div class="alert-item" *ngFor="let alert of userAlerts; let i = index" [class]="alert.type">
+                         <div class="alert-icon">
+                           <span *ngIf="alert.type === 'warning'">⚠️</span>
+                           <span *ngIf="alert.type === 'info'">ℹ️</span>
+                           <span *ngIf="alert.type === 'success'">✅</span>
+                           <span *ngIf="alert.type === 'error'">❌</span>
+                         </div>
+                         <div class="alert-content">
+                           <input type="text" class="alert-title-input" [placeholder]="alert.title" [(ngModel)]="alert.title">
+                           <input type="text" class="alert-desc-input" [placeholder]="alert.description" [(ngModel)]="alert.description">
+                         </div>
+                         <div class="alert-actions">
+                           <select class="alert-type-select" [(ngModel)]="alert.type">
+                             <option value="warning">Warning</option>
+                             <option value="info">Info</option>
+                             <option value="success">Success</option>
+                             <option value="error">Error</option>
+                           </select>
+                           <button type="button" class="remove-btn alert-remove" (click)="removeAlert(i)" *ngIf="userAlerts.length > 1">
+                             <span>×</span>
+                           </button>
+                         </div>
+                       </div>
+                     </div>
+                     <div class="add-item-section">
+                       <button type="button" class="add-item-btn" (click)="addAlert()">
+                         <span>+</span> Add Alert
+                       </button>
+                     </div>
+                   </div>
+                 </div>
+               </div>
+              
+               <!-- Charts Section -->
+               <div class="charts-section">
+                 <!-- Charts section is now empty after moving Production Trend -->
+               </div>
+             </div>
+           </div>
+         </div>
+       </div>
+     </div> 
+  </div> 

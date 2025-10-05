@@ -1,0 +1,169 @@
+<!-- <header>
+  <nav class="flex items-center">
+    <img src="/images/aicLogo.png" alt="aicLogo" class="h-8" />
+    <span class="font-medium">{{ title }}</span>
+  </nav>
+</header> -->
+
+<div class="flex justify-content-center mt-2">
+  <div class="flex flex-wrap gap-4 p-1">
+    <div class="flex align-items-center">
+      <p-radioButton
+        name="filterType"
+        value="shift"
+        [(ngModel)]="selectedFilter"
+        inputId="shift"
+        (onClick)="onFilterChange()"
+      />
+      <label for="shift" class="ml-2 font-medium">Shift</label>
+    </div>
+    <div class="flex align-items-center">
+      <p-radioButton
+        name="filterType"
+        value="day" 
+        [(ngModel)]="selectedFilter"
+        inputId="day"
+        (onClick)="onFilterChange()"
+      />
+      <label for="day" class="ml-2 font-medium">Day</label>
+    </div>
+    <div class="flex align-items-center">
+      <p-radioButton
+        name="filterType"
+        value="month"
+        [(ngModel)]="selectedFilter"
+        inputId="month"
+        (onClick)="onFilterChange()"
+      />
+      <label for="month" class="ml-2 font-medium">Month</label>
+    </div>
+    <div class="flex align-items-center">
+      <p-radioButton
+        name="filterType"
+        value="periodic"
+        [(ngModel)]="selectedFilter"
+        inputId="periodic"
+        (onClick)="onFilterChange()"
+      />
+      <label for="periodic" class="ml-2 font-medium">Periodic</label>
+    </div>
+  </div>
+</div>
+
+<div class="mt-4 p-1">
+  <!-- Shift Filter -->
+  <div
+    *ngIf="selectedFilter === 'shift'"
+    class="flex flex-wrap gap-4 align-items-end"
+  >
+    <div class="field">
+      <label for="shiftDate" class="block mb-1">Date</label>
+      <p-datePicker
+        [(ngModel)]="shiftDate"
+        inputId="shiftDate"
+        dateFormat="dd/mm/yy"
+        [maxDate]="maxDate"
+        [showIcon]="true"
+        styleClass="w-full"
+      ></p-datePicker>
+    </div>
+    <div class="field">
+      <label for="shiftSelect" class="block mb-1">Shift</label>
+      <p-select
+        [options]="shifts"
+        [(ngModel)]="selectedShift"
+        inputId="shiftSelect"
+        placeholder="Select Shift"
+        styleClass="w-full"
+      ></p-select>
+    </div>
+    <div class="pt-7">
+        <p-button label="Load Report" (onClick)="loadReport()" styleClass="p-button-success" [disabled]="!canLoadReport()"></p-button>
+    </div>
+  </div>
+
+  <!-- Day Filter -->
+  <div
+    *ngIf="selectedFilter === 'day'"
+    class="flex flex-wrap gap-4 align-items-end"
+  >
+    <div class="field">
+      <label for="dayDate" class="block mb-1">Date</label>
+      <p-datePicker
+        [(ngModel)]="dayDate"
+        inputId="dayDate"
+        dateFormat="dd/mm/yy"
+        [maxDate]="maxDate" 
+        [showIcon]="true"
+        styleClass="w-full"
+      ></p-datePicker>
+    </div>
+    <div class="pt-7">
+        <p-button label="Load Report" (onClick)="loadReport()" styleClass="p-button-success" [disabled]="!canLoadReport()"></p-button>
+    </div>
+  </div>
+
+  <!-- Month Filter -->
+  <div
+    *ngIf="selectedFilter === 'month'"
+    class="flex flex-wrap gap-4 align-items-end"
+  >
+    <div class="field">
+      <label for="monthDate" class="block mb-1">Month</label>
+      <p-datePicker
+        [(ngModel)]="monthDate"
+        inputId="monthDate"
+        dateFormat="mm/yy"
+        [maxDate]="maxDate"
+        view="month"
+        [showIcon]="true"
+        styleClass="w-full"
+      ></p-datePicker>
+    </div>
+    <div class="pt-7">
+        <p-button label="Load Report" (onClick)="loadReport()" styleClass="p-button-success" [disabled]="!canLoadReport()"></p-button>
+    </div>
+  </div>
+
+  <!-- Periodic Filter -->
+  <div
+    *ngIf="selectedFilter === 'periodic'"
+    class="flex flex-wrap gap-4 align-items-end"
+  >
+    <div class="field">
+      <label for="startDate" class="block mb-1">Start Date</label>
+      <p-datePicker
+        [(ngModel)]="startDate"
+        inputId="startDate"
+        dateFormat="dd/mm/yy"
+        [maxDate]="maxDate"
+        [showTime]="true"
+        [showIcon]="true"
+        styleClass="w-full"
+      ></p-datePicker>
+    </div>
+    <div class="field">
+      <label for="endDate" class="block mb-1">End Date</label>
+      <p-datePicker
+        [(ngModel)]="endDate"
+        inputId="endDate"
+        dateFormat="dd/mm/yy"
+        [maxDate]="maxDate"
+        [showTime]="true"
+        [showIcon]="true"
+        styleClass="w-full"
+      ></p-datePicker>
+    </div>
+    <div class="pt-7">
+        <p-button label="Load Report" (onClick)="loadReport()" styleClass="p-button-success" [disabled]="!canLoadReport()"></p-button>
+    </div>
+  </div>
+</div>
+
+<div class="mt-4" *ngIf="reportUrl">
+  <div class="report-info">
+    <h3>Report Generated Successfully!</h3>
+    <p>Your report has been loaded in the dashboard. You can view it on the home page.</p>
+    <button class="btn btn-primary" routerLink="/home">View Report in Dashboard</button>
+  </div>
+</div>

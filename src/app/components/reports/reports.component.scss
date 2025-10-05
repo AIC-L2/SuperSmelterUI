@@ -1,0 +1,69 @@
+header {
+    display: flex;
+    padding-inline: 16px;
+    padding-block: 8px;
+    background-color: #001f64;;
+    color: white;
+    align-items: center;
+    justify-content: space-between;
+
+    nav { 
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+
+        img {
+            margin-right: auto; /* Pushes the logo to the left end */
+        }
+
+        span {
+            flex-grow: 1; /* Allows the title to take available space */
+            text-align: center; /* Centers the title text */
+        }
+    }
+}
+
+.report-info {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 30px;
+  text-align: center;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.report-info h3 {
+  color: #1a5f3a;
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.report-info p {
+  color: #4a5568;
+  margin-bottom: 25px;
+  font-size: 1rem;
+}
+
+.btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-primary {
+  background: #1a5f3a;
+  color: white;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(26, 95, 58, 0.4);
+}

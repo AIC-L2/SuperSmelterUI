@@ -1,0 +1,466 @@
+// appTheme is not available; define fallbacks for used variables
+$table_gap: 1rem;
+$loader_color: #0ea5e9;
+
+.recipe {
+    // Recipe Grid Container Styles
+    .recipe-grid-container {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        background-color: #ffffff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        // margin-bottom: 1rem;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .recipe-grid-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 5px 16px;
+        background: linear-gradient(135deg, #414763 0%, #097934 57%,#414763);// linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-bottom: 1px solid #dee2e6;
+        gap: 16px;
+    }
+
+    .grid-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: white;
+        white-space: nowrap;
+    }
+
+    .toggle-grid-btn {
+        color: white !important;
+        border: 1px solid rgba(255, 255, 255, 0.3) !important;
+        background-color: rgba(255, 255, 255, 0.1) !important;
+        transition: all 0.2s ease;
+        border-radius: 6px;
+        padding: 6px 12px;
+        font-size: 14px;
+        
+        &:hover {
+            background-color: rgba(255, 255, 255, 0.2) !important;
+            border-color: rgba(255, 255, 255, 0.5) !important;
+            transform: scale(1.05);
+        }
+        
+        &:focus {
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3) !important;
+        }
+        
+        .p-button-icon {
+            font-size: 12px;
+        }
+    }
+
+    .recipe-grid-content {
+        transition: all 0.3s ease;
+        overflow: hidden;
+        
+        &.minimized {
+            .recipeGrid {
+                max-height: 0;
+                opacity: 0;
+                overflow: hidden;
+            }
+        }
+        
+        &:not(.minimized) {
+            .recipeGrid {
+                max-height: 1000px; // Adjust based on your content
+                opacity: 1;
+            }
+        }
+    }
+
+
+
+    .left {
+        width: 100%;
+    }
+    .right {
+        display: none; // Hide the right section since we want full width
+    }
+
+    .recipeGrid {
+        transition: all 0.3s ease;
+    }
+
+    // Table caption styling
+    ::ng-deep .p-datatable .p-datatable-caption {
+        padding: 2px 8px;
+        background-color: #eaf5ff;
+        border-bottom: 1px solid #2196f3;
+    }
+
+    .table-caption {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+
+    .caption-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: #333;
+        line-height: 1;
+    }
+
+
+
+    .active-recipe-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 6px 12px;
+        border-radius: 6px;
+        background-color: rgba(255, 255, 255, 0.1);
+        font-size: 15px;
+        color: white;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .info-value {
+        font-weight: 500;
+        color: white;
+    }
+
+    .info-separator {
+        color: rgba(255, 255, 255, 0.5);
+        margin: 0 4px;
+    }
+
+    .caption-buttons {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+    }
+
+    // Make buttons smaller and more compact
+    ::ng-deep .p-datatable .p-datatable-caption .p-button.p-button-sm {
+        padding: 0.15rem 0.4rem;
+        font-size: 0.75rem;
+        min-height: 22px;
+        min-width: 22px;
+    }
+
+    .p-buttonset {
+        display: inline-flex;
+        gap: 2px;
+    }
+
+    // Header content layout
+    .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+
+    .header-text {
+        font-weight: 600;
+        color: #495057;
+        font-size: 14px;
+    }
+
+    .header-icons {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    // PrimeNG Table header customization
+    ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+        padding: 4px 6px;
+        font-size: 13px;
+        background-color:#bdd5eb ;
+        // color: ;
+        font-weight: 700;
+        line-height: 1.1;
+    }
+
+    // PrimeNG Table body customization - reduce font size
+    ::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+        padding: 3px 6px;
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 1.1;
+    }
+
+    ::ng-deep .p-datatable.p-datatable-sm .p-datatable-header {
+        background-color: #bdd5eb !important;
+    }
+
+    .loader-container {
+        width: 100%;
+        height: 70%;
+        display: flex;
+        align-items: center;
+        flex-flow: column;
+        position: absolute;
+    }
+
+    .loader {
+        border: 6px solid #f3f3f3;
+        border-top-color: $loader_color;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+        position: absolute;
+        top: 50%;
+        margin: 0px auto;
+        z-index: 9999;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    .th_padding {
+        padding: 3px 5px !important;
+    }
+
+    // Recipe Dialog Styling
+    ::ng-deep .recipe-dialog {
+        .p-dialog {
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            border: none;
+        }
+
+        .p-dialog-header {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e9ecef;
+            padding: 16px 20px;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .p-dialog-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #495057;
+            margin: 0;
+        }
+
+        .p-dialog-header-icon {
+            color: #6c757d;
+            font-size: 16px;
+            
+            &:hover {
+                background-color: #f8f9fa;
+                color: #495057;
+            }
+        }
+
+        .p-dialog-content {
+            padding: 20px;
+            background-color: #ffffff;
+        }
+
+        .p-dialog-footer {
+            background-color: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+            padding: 16px 20px;
+            border-radius: 0 0 8px 8px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+    }
+
+    .recipe-form {
+        .field {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #495057;
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+
+        .required-asterisk {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            background-color: #ffffff;
+            height: 40px;
+
+            &:focus {
+                outline: none;
+                border-color: #80bdff;
+                box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+            }
+
+            &:disabled {
+                background-color: #e9ecef;
+                opacity: 0.65;
+            }
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+            font-family: inherit;
+        }
+
+        .form-input-number {
+            ::ng-deep .p-inputnumber-input {
+                width: 100%;
+                padding: 8px 12px;
+                border: 1px solid #ced4da;
+                border-radius: 4px;
+                font-size: 14px;
+                height: 40px;
+                transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+                background-color: #ffffff;
+
+                &:focus {
+                    outline: none;
+                    border-color: #80bdff;
+                    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+                }
+
+                &:disabled {
+                    background-color: #e9ecef;
+                    opacity: 0.65;
+                }
+            }
+        }
+
+        .form-select {
+            ::ng-deep .p-select {
+                width: 100%;
+                
+                .p-select-trigger {
+                    border: 1px solid #ced4da;
+                    border-radius: 4px;
+                    background-color: #ffffff;
+                    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+                    &:hover {
+                        border-color: #80bdff;
+                    }
+                }
+
+                .p-select-trigger-icon {
+                    color: #6c757d;
+                }
+
+                &.p-focus .p-select-trigger {
+                    border-color: #80bdff;
+                    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+                }
+
+                .p-select-label {
+                    padding: 8px 12px;
+                    font-size: 14px;
+                    color: #495057;
+                }
+
+                &.p-disabled {
+                    .p-select-trigger {
+                        background-color: #e9ecef;
+                        opacity: 0.65;
+                    }
+                }
+            }
+        }
+
+        .select-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            width: 100%;
+
+            .item-text {
+                font-size: 14px;
+                color: #495057;
+            }
+
+            .guid-indicator {
+                color: #28a745;
+                font-size: 12px;
+            }
+        }
+
+        .error-message {
+            display: block;
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+    }
+
+    .dialog-footer {
+        .save-btn {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: #ffffff;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 4px;
+            transition: all 0.15s ease-in-out;
+
+            &:hover {
+                background-color: #0056b3;
+                border-color: #0056b3;
+            }
+
+            &:focus {
+                box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+            }
+        }
+
+        .cancel-btn {
+            background-color: #ffffff;
+            border-color: #6c757d;
+            color: #6c757d;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 4px;
+            transition: all 0.15s ease-in-out;
+
+            &:hover {
+                background-color: #6c757d;
+                border-color: #6c757d;
+                color: #ffffff;
+            }
+
+            &:focus {
+                box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25);
+            }
+        }
+    }
+}
