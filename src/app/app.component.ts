@@ -66,12 +66,12 @@ export class AppComponent implements OnInit{
    }
 
   getPageTitle(): string {
-    if (this.currentRoute === '/home' || this.currentRoute === '/') {
-      return 'Production Dashboard';
-    } else if (this.currentRoute === '/reports') {
-      return 'Report Generator';
-    } else if (this.currentRoute === '/recipe') {
+    if (this.currentRoute === '/recipe' || this.currentRoute === '/') {
       return 'Recipes';
+    } else if (this.currentRoute === '/reports' ) {
+      return 'Report Generator';
+    } else if (this.currentRoute === '/home') {
+      return 'Production Dashboard';
     } else if (this.currentRoute === '/recipeNew') {
       return 'Recipes New';
     } else {
